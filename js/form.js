@@ -11,6 +11,17 @@
   var cur = 0, openedAt = Date.now();
   var files = { doc: null, pay: null }, pending = 0;
 
+  /* ---------- language helpers ---------- */
+  // bi(): trusted constant strings only (never user data). Both languages are emitted; CSS shows the active one.
+  function bi(zh, en) { return '<span class="zh">' + zh + '</span><span class="en">' + en + '</span>'; }
+  function setBi(el, zh, en) {   // safe for any text, including config / user values
+    el.textContent = "";
+    var a = document.createElement("span"), b = document.createElement("span");
+    a.className = "zh"; a.textContent = zh; b.className = "en"; b.textContent = en;
+    el.appendChild(a); el.appendChild(b);
+  }
+  function lang() { return window.JNU_LANG ? JNU_LANG.get() : "hant"; }
+
   /* ---------- config → page ---------- */
   $("#orgZh").textContent = C.ORG_ZH || "";
   $("#orgEn").textContent = C.ORG_EN || "";
@@ -22,41 +33,41 @@
   if (!C.ENDPOINT) $("#demoBanner").hidden = false;
   if (C.CONTACT && C.CONTACT.website) $("#homeLink").href = "https://" + C.CONTACT.website.replace(/^https?:\/\//, "");
 
-  function contactLine() {
-    var c = C.CONTACT || {}, b = [];
-    if (c.address) b.push("地址 Address：" + c.address);
-    if (c.phone) b.push("電話 Tel：" + c.phone);
-    if (c.whatsapp) b.push("WhatsApp：" + c.whatsapp);
-    if (c.email) b.push("電郵 Email：" + c.email);
-    return b.join("　|　");
+  function contactLines() {
+    var c = C.CONTACT || {}, z = [], e = [];
+    if (c.address) { z.push("地址：" + c.address); e.push("Address: " + c.address); }
+    if (c.phone) { z.push("電話：" + c.phone); e.push("Tel: " + c.phone); }
+    if (c.whatsapp) { z.push("WhatsApp：" + c.whatsapp); e.push("WhatsApp: " + c.whatsapp); }
+    if (c.email) { z.push("電郵：" + c.email); e.push("Email: " + c.email); }
+    return { any: z.length > 0, zh: z.join("　|　"), en: e.join("  |  ") };
   }
-  var cl = contactLine();
+  var cl = contactLines();
   var site = (C.CONTACT && C.CONTACT.website) || "";
-  var cline = cl || (site ? "網站 Website: " + site : "");
-  $("#picsContact").textContent = cline ? "Contact the Association: " + cline : "";
-  $("#picsContactZh").textContent = cline ? "聯絡本會：" + cline : "";
-  $("#doneContact").textContent = cl ? "如有查詢，請聯絡我們 For enquiries: " + cl : "";
+  var cZh = cl.any ? cl.zh : (site ? "網站：" + site : ""), cEn = cl.any ? cl.en : (site ? "Website: " + site : "");
+  $("#picsContact").textContent = cEn ? "Contact the Association: " + cEn : "";
+  $("#picsContactZh").textContent = cZh ? "聯絡本會：" + cZh : "";
+  if (cl.any) setBi($("#doneContact"), "如有查詢，請聯絡我們：" + cl.zh, "For enquiries: " + cl.en); else $("#doneContact").textContent = "";
 
   function fillDl(id, rows) {
     var dl = $(id); dl.innerHTML = "";
     rows.forEach(function (r) {
       var dt = document.createElement("dt"), dd = document.createElement("dd");
-      dt.textContent = r[0];
-      if (r[1]) dd.textContent = r[1]; else { dd.textContent = "待公佈 To be confirmed"; dd.className = "tbc"; }
+      setBi(dt, r[0][0], r[0][1]);
+      if (r[1]) dd.textContent = r[1]; else { dd.innerHTML = bi("待公佈", "To be confirmed"); dd.className = "tbc"; }
       dl.appendChild(dt); dl.appendChild(dd);
     });
   }
   var P = C.PAYMENT || {};
-  fillDl("#payInPerson", [["地址 Address", P.officeAddress], ["辦公時間 Hours", P.officeHours]]);
-  fillDl("#payCheque", [["抬頭 Payable to", P.chequePayableTo], ["郵寄地址 Mail to", P.officeAddress]]);
-  fillDl("#payBank", [["戶名 Payee", P.payee], ["銀行 Bank", P.bank], ["帳號 Account", P.account], ["轉數快 FPS", P.fps]]);
+  fillDl("#payInPerson", [[["地址", "Address"], P.officeAddress], [["辦公時間", "Hours"], P.officeHours]]);
+  fillDl("#payCheque", [[["抬頭", "Payable to"], P.chequePayableTo], [["郵寄地址", "Mail to"], P.officeAddress]]);
+  fillDl("#payBank", [[["戶名", "Payee"], P.payee], [["銀行", "Bank"], P.bank], [["帳號", "Account"], P.account], [["轉數快", "FPS"], P.fps]]);
 
   /* ---------- phone region pickers ---------- */
   var PH = window.JNU_PHONE;
-  [["mobile", "mobile"], ["homeTel", "any"]].forEach(function (p) {
+  [["mobile", "mobile"]].forEach(function (p) {
     var sel = $("#" + p[0] + "Cc"), inp = $("#" + p[0]);
     PH.fill(sel);
-    function hint() { if (p[0] !== "mobile") return; $("#mobileHint").textContent = PH.region(sel.value).hint; inp.placeholder = ""; }
+    function hint() { if (p[0] !== "mobile") return; var h = PH.region(sel.value).hint; setBi($("#mobileHint"), h.zh, h.en); }
     sel.addEventListener("change", hint); hint();
     inp.addEventListener("input", function () { PH.autodetect(sel, inp); });
   });
@@ -67,13 +78,15 @@
 
   /* ---------- year selects / dates ---------- */
   var thisYear = new Date().getFullYear();
-  function yearOptions(sel, from, to, blank) {
-    var h = '<option value="">' + blank + "</option>";
+  function yearOptions(sel, from, to) {
+    var h = '<option value="" data-zh="— 年份 —" data-en="— Year —">— 年份 —</option>';
     for (var y = to; y >= from; y--) h += "<option>" + y + "</option>";
     sel.innerHTML = h;
   }
-  yearOptions($("#enrolYear"), 1906, thisYear, "— 年份 Year —");  // Jinan founded 1906
-  yearOptions($("#gradYear"), 1906, thisYear + 8, "— 年份 Year —");
+  yearOptions($("#gradYear"), 1906, thisYear + 8);   // Jinan founded 1906
+  yearOptions($("#pe1Year"), 1950, thisYear + 8);
+  yearOptions($("#pe2Year"), 1950, thisYear + 8);
+  $("#peAdd").addEventListener("click", function () { $("#peRow2").hidden = false; this.parentNode.hidden = true; });
   var today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
   $("#dob").max = today;
   $("#signDate").value = today;
@@ -95,7 +108,7 @@
     window.scrollTo({ top: top, behavior: "smooth" });
   }
 
-  function showError(msg) { errBox.textContent = msg; errBox.hidden = false; }
+  function showError(html) { errBox.innerHTML = html; errBox.hidden = false; }
   function hideError() { errBox.hidden = true; }
 
   function memberType() { var r = $('input[name="memberType"]:checked'); return r ? r.value : ""; }
@@ -105,9 +118,9 @@
   function mark(el, msg) {
     var f = el.closest(".field") || el.closest(".choice") || el.parentNode;
     f.classList.add("invalid");
-    if (msg && !f.querySelector(".msg")) { var m = document.createElement("div"); m.className = "msg"; m.textContent = msg; f.appendChild(m); }
+    if (msg && !f.querySelector(".msg")) { var m = document.createElement("div"); m.className = "msg"; m.innerHTML = msg; f.appendChild(m); }
   }
-  var MSG = "此欄必填 Required";
+  var MSG = bi("此欄必填", "Required");
 
   function validateStep(n) {
     var sec = steps[n], bad = [], seen = {};
@@ -125,27 +138,30 @@
       }
       var v = el.value.trim();
       if (el.required && !v) { mark(el, MSG); bad.push(el); return; }
-      if (v && el.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { mark(el, "電郵格式不正確 Invalid email"); bad.push(el); }
-      if (v && (el.name === "mobile" || el.name === "homeTel")) {
-        var pr = PH.check($("#" + el.name + "Cc").value, v, el.name === "mobile" ? "mobile" : "any");
-        if (!pr.ok) { mark(el, "電話號碼與所選地區不符，請檢查 Number doesn't match the selected region — " + pr.region.hint); bad.push(el); }
+      if (v && el.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { mark(el, bi("電郵格式不正確", "Invalid email")); bad.push(el); }
+      if (v && el.name === "mobile") {
+        var pr = PH.check($("#mobileCc").value, v, "mobile");
+        if (!pr.ok) { mark(el, bi("電話號碼與所選地區不符，請檢查（" + pr.region.hint.zh + "）", "Number doesn't match the selected region (" + pr.region.hint.en + ")")); bad.push(el); }
       }
-      if (v && el.name === "hkid" && !/^[A-Za-z]{1,2}\d{6}\(?[0-9Aa]\)?$/.test(v.replace(/\s/g, ""))) { mark(el, "格式例：A123456(7) e.g. A123456(7)"); bad.push(el); }
+      if (v && el.name === "hkid" && !/^[A-Za-z]{1,2}\d{6}\(?[0-9Aa]\)?$/.test(v.replace(/\s/g, ""))) { mark(el, bi("格式例：A123456(7)", "Format: A123456(7)")); bad.push(el); }
     });
-    if (n === 1) {
-      var e = +$("#enrolYear").value, g = +$("#gradYear").value;
-      if (e && g && g < e) { mark($("#gradYear"), "畢業年份不可早於入學年份 Must not precede enrolment"); bad.push($("#gradYear")); }
+    if (n === 1) {   // prior education: a qualification / field / year needs an institution name
+      [1, 2].forEach(function (i) {
+        if ($("#peRow" + i).hidden) return;
+        var any = $("#pe" + i + "Level").value || val("pe" + i + "Field") || $("#pe" + i + "Year").value;
+        if (any && !val("pe" + i + "Inst")) { mark($("#pe" + i + "Inst"), bi("請填寫院校名稱", "Please enter the institution")); bad.push($("#pe" + i + "Inst")); }
+      });
     }
     if (n === 3) {
       if (memberType() === "basic" && !$('input[name="payMethod"]:checked')) {
-        mark($('input[name="payMethod"]'), "請選擇繳費方式 Select a payment method"); bad.push($('input[name="payMethod"]'));
+        mark($('input[name="payMethod"]'), bi("請選擇繳費方式", "Select a payment method")); bad.push($('input[name="payMethod"]'));
       }
       if (memberType() === "student" && !files.doc) {
-        mark($("#docFile"), "學生會員請上傳學生證 Student card required"); bad.push($("#docFile"));
+        mark($("#docFile"), bi("學生會員請上傳學生證", "Student card required")); bad.push($("#docFile"));
       }
     }
     if (bad.length) {
-      showError("請檢查標示的欄位。 Please check the highlighted fields.");
+      showError(bi("請檢查標示的欄位。", "Please check the highlighted fields."));
       bad[0].scrollIntoView({ behavior: "smooth", block: "center" });
       if (bad[0].focus && bad[0].type !== "radio") bad[0].focus({ preventScroll: true });
       return false;
@@ -233,19 +249,21 @@
     if (!f) return;
     var isImg = /^image\//.test(f.type), isPdf = f.type === "application/pdf";
     function reject(msg) { inp.value = ""; files[key] = null; label.textContent = ""; mark(inp, msg); }
-    if (!isImg && !isPdf) return reject("只接受相片或 PDF Only photos or PDF");
-    if (isPdf && f.size > MAXB) return reject("PDF 超過 " + C.MAX_FILE_MB + "MB PDF too large");
-    if (isImg && f.size > 40 * 1024 * 1024) return reject("相片過大 Photo too large");
-    pending++; label.textContent = "處理中… Processing…";
+    if (!isImg && !isPdf) return reject(bi("只接受相片或 PDF", "Only photos or PDF"));
+    if (isPdf && f.size > MAXB) return reject(bi("PDF 超過 " + C.MAX_FILE_MB + "MB", "PDF is over " + C.MAX_FILE_MB + "MB"));
+    if (isImg && f.size > 40 * 1024 * 1024) return reject(bi("相片過大", "Photo too large"));
+    pending++; label.innerHTML = bi("處理中…", "Processing…");
     (isImg ? shrink(f) : Promise.resolve({ blob: f, name: f.name, resized: false }))
       .then(function (r) {
         if (r.blob.size > MAXB) throw new Error("big");
         return toB64(r.blob).then(function (b64) {
           files[key] = { name: r.name, type: r.blob.type, size: r.blob.size, data: b64 };
-          label.textContent = "✓ " + r.name + " (" + Math.round(r.blob.size / 1024) + " KB" + (r.resized ? "，已自動縮小 resized" : "") + ")";
+          label.textContent = "✓ " + r.name + " (" + Math.round(r.blob.size / 1024) + " KB";
+          if (r.resized) { var rs = document.createElement("span"); rs.innerHTML = bi("，已自動縮小", ", resized"); label.appendChild(rs); }
+          label.appendChild(document.createTextNode(")"));
         });
       })
-      .catch(function (e) { reject(e.message === "big" ? "檔案仍超過 " + C.MAX_FILE_MB + "MB File still too large" : "無法讀取檔案，請改用 JPG／PNG Cannot read file — try JPG/PNG"); })
+      .catch(function (e) { reject(e.message === "big" ? bi("檔案仍超過 " + C.MAX_FILE_MB + "MB", "File is still over " + C.MAX_FILE_MB + "MB") : bi("無法讀取檔案，請改用 JPG／PNG", "Cannot read the file — try JPG/PNG")); })
       .then(function () { pending--; });
   }
   $$('input[type="file"]').forEach(function (i) { i.addEventListener("change", function () { readFile(i); }); });
@@ -259,7 +277,7 @@
     function render() {
       tsId = window.turnstile.render("#tsBox", {
         sitekey: C.TURNSTILE_SITEKEY,
-        language: (window.JNU_LANG && JNU_LANG.get() === "hans") ? "zh-cn" : "zh-tw",
+        language: lang() === "hans" ? "zh-cn" : lang() === "en" ? "en" : "zh-tw",
         callback: function (t) { tsToken = t; hideError(); },
         "expired-callback": function () { tsToken = ""; },
         "error-callback": function () { tsToken = ""; }
@@ -269,7 +287,7 @@
     var s = document.createElement("script");
     s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"; s.async = true;
     s.onload = render;
-    s.onerror = function () { showError("無法載入驗證，請重新整理。 Could not load the human check — please refresh."); };
+    s.onerror = function () { showError(bi("無法載入驗證，請重新整理。", "Could not load the human check — please refresh.")); };
     document.head.appendChild(s);
   }
   function resetTurnstile() { tsToken = ""; if (tsId !== null && window.turnstile) window.turnstile.reset(tsId); }
@@ -279,6 +297,15 @@
   function checked(name) { return $$('input[name="' + name + '"]:checked').map(function (e) { return e.value; }); }
   function radioVal(name) { return (checked(name)[0]) || ""; }
   function withOther(sel, other, test) { var v = val(sel), o = val(other); return test(v) && o ? v + "：" + o : v; }
+  function priorEducation() {   // one line per entry: institution | qualification | field | year
+    var out = [];
+    [1, 2].forEach(function (i) {
+      if ($("#peRow" + i).hidden) return;
+      var inst = val("pe" + i + "Inst"); if (!inst) return;
+      out.push([inst, $("#pe" + i + "Level").value, val("pe" + i + "Field"), $("#pe" + i + "Year").value].join(" | "));
+    });
+    return out.join("\n");
+  }
   function collect(ref) {
     var chat = [];
     if ($('input[name="whatsapp"]').checked) chat.push("WhatsApp");
@@ -287,9 +314,10 @@
       ref: ref, submittedAt: new Date().toISOString(),
       cnName: val("cnName"), enName: val("enName"), gender: ($('input[name="gender"]:checked') || {}).value || "",
       dob: val("dob"), hkid: val("hkid").toUpperCase(), nationality: val("nationality"), ancestry: val("ancestry"),
-      mobile: phoneFull("mobile", "mobile"), chatApps: chat.join(" / "), email: val("email"), homeTel: phoneFull("homeTel", "any"), fax: val("fax"),
-      address: val("address"), corrAddress: val("corrAddress"),
-      enrolYear: val("enrolYear"), gradYear: val("gradYear"), college: withOther("college", "collegeOther", function (v) { return v === "其他"; }), major: val("major"), eduLevel: val("eduLevel"),
+      mobile: phoneFull("mobile", "mobile"), chatApps: chat.join(" / "), email: val("email"),
+      address: val("address"),
+      gradYear: val("gradYear"), college: withOther("college", "collegeOther", function (v) { return v === "其他"; }), eduLevel: val("eduLevel"),
+      priorEducation: priorEducation(),
       district: withOther("district", "districtOther", function (v) { return /^香港以外/.test(v); }),
       workStatus: radioVal("workStatus"), industry: withOther("industry", "industryOther", function (v) { return /^其他/.test(v); }),
       mentor: radioVal("mentor"), interests: checked("interests"), roles: checked("roles"), cluster: radioVal("cluster"),
@@ -298,8 +326,8 @@
       memberType: memberType() === "basic" ? "基本會員 Basic" : "學生會員 Student",
       fee: memberType() === "basic" ? C.FEE_BASIC : 0,
       payMethod: memberType() === "basic" ? (($('input[name="payMethod"]:checked') || {}).value || "") : "",
-      consent: (($('input[name="consent"]:checked') || {}).value || "") + " [PICS " + PICS_VERSION + " " + (window.JNU_LANG ? JNU_LANG.get() : "hant") + "]",
-      lang: window.JNU_LANG ? JNU_LANG.get() : "hant", turnstileToken: tsToken,
+      consent: (($('input[name="consent"]:checked') || {}).value || "") + " [PICS " + PICS_VERSION + " " + lang() + "]",
+      lang: lang(), turnstileToken: tsToken,
       signName: val("signName"), signDate: val("signDate"),
       userAgent: navigator.userAgent, website: val("website"), elapsedMs: Date.now() - openedAt,
       docFile: files.doc, payFile: $("#payProofWrap").hidden ? null : files.pay
@@ -307,21 +335,46 @@
     return d;
   }
 
+  // Splits a stored "中文 English" value into a displayable pair.
+  function pair(v) {
+    var m = /^(.*?[^\x00-\x7F])\s+([A-Za-z].*)$/.exec(v || "");
+    return m ? { zh: m[1], en: m[2] } : { zh: v || "—", en: v || "—" };
+  }
+  function labelPair(input) {   // from the visible label markup of a checked radio
+    var l = input && input.closest("label"); if (!l) return { zh: "—", en: "—" };
+    var z = l.querySelector(".zh"), e = l.querySelector(".en");
+    return { zh: z ? z.textContent.trim() : "—", en: e ? e.textContent.trim() : (z ? z.textContent.trim() : "—") };
+  }
+  function selPair(id, other, test) {
+    var s = $("#" + id), o = s.options[s.selectedIndex]; if (!o || !s.value) return { zh: "—", en: "—" };
+    var zh = o.getAttribute("data-zh") || o.textContent, en = o.getAttribute("data-en") || o.textContent, x = val(other);
+    if (test(s.value) && x) { zh += "：" + x; en += ": " + x; }
+    return { zh: zh, en: en };
+  }
   function buildSummary() {
-    var d = collect("—"), dl = $("#summary"), rows = [
-      ["姓名 Name", d.cnName + " " + d.enName], ["性別 Gender", d.gender], ["出生日期 DOB", d.dob],
-      ["電話 Mobile", d.mobile + (d.chatApps ? " (" + d.chatApps + ")" : "")], ["電郵 Email", d.email],
-      ["住宅地址 Address", d.address], ["居住區域 District", d.district || "—"], ["入學／畢業 Years", d.enrolYear + " – " + (d.gradYear || "在學 current")],
-      ["學院／專業 College / Major", d.college + " / " + d.major],
-      ["職業 Occupation", [d.workStatus, d.company, d.position].filter(Boolean).join(" · ") || "—"],
-      ["活動興趣 Interests", d.interests.length + " 項 selected"],
-      ["會籍 Membership", d.memberType + (d.fee ? " (HK$" + d.fee + ")" : "")],
-      ["繳費方式 Payment", d.payMethod || "—"]
+    var d = collect("—"), dl = $("#summary"), none = { zh: "—", en: "—" };
+    var occ = [d.company, d.position].filter(Boolean).join(" · ");
+    var ws = $('input[name="workStatus"]:checked');
+    var rows = [
+      ["姓名", "Name", d.cnName + " " + d.enName], ["性別", "Gender", pair(d.gender)], ["出生日期", "Date of birth", d.dob],
+      ["手提電話", "Mobile", d.mobile + (d.chatApps ? " (" + d.chatApps + ")" : "")], ["電郵", "Email", d.email],
+      ["居住區域", "District", selPair("district", "districtOther", function (v) { return /^香港以外/.test(v); })],
+      ["住宅地址", "Address", d.address || "—"],
+      ["畢業年份", "Graduation", d.gradYear || { zh: "在學", en: "Still studying" }],
+      ["學院", "College", selPair("college", "collegeOther", function (v) { return v === "其他"; })],
+      ["其他學歷", "Other education", d.priorEducation || "—"],
+      ["職業", "Occupation", ws ? { zh: labelPair(ws).zh + (occ ? " · " + occ : ""), en: labelPair(ws).en + (occ ? " · " + occ : "") } : (occ || "—")],
+      ["活動興趣", "Interests", { zh: "已選 " + d.interests.length + " 項", en: d.interests.length + " selected" }],
+      ["會籍", "Membership", { zh: (memberType() === "basic" ? "基本會員" : "學生會員") + (d.fee ? "（HK$" + d.fee + "）" : "（免費）"), en: (memberType() === "basic" ? "Basic" : "Student") + (d.fee ? " (HK$" + d.fee + ")" : " (free)") }],
+      ["繳費方式", "Payment", d.payMethod ? pair(d.payMethod) : none]
     ];
     dl.innerHTML = "";
     rows.forEach(function (r) {
       var dt = document.createElement("dt"), dd = document.createElement("dd");
-      dt.textContent = r[0]; dd.textContent = r[1]; dl.appendChild(dt); dl.appendChild(dd);
+      setBi(dt, r[0], r[1]);
+      if (typeof r[2] === "object") setBi(dd, r[2].zh, r[2].en); else dd.textContent = r[2];
+      dd.style.whiteSpace = "pre-line";
+      dl.appendChild(dt); dl.appendChild(dd);
     });
   }
 
@@ -335,11 +388,11 @@
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     if (!validateStep(cur)) return;
-    if (C.TURNSTILE_SITEKEY && !tsToken) { showError("請先完成人機驗證。 Please complete the human check first."); return; }
-    if (pending > 0) { showError("檔案仍在讀取，請稍候再試。 File still loading, please retry."); return; }
+    if (C.TURNSTILE_SITEKEY && !tsToken) { showError(bi("請先完成人機驗證。", "Please complete the human check first.")); return; }
+    if (pending > 0) { showError(bi("檔案仍在讀取，請稍候再試。", "File still loading — please retry.")); return; }
     var ref = makeRef(), data = collect(ref);
     btnSubmit.disabled = true; btnBack.disabled = true;
-    var orig = btnSubmit.innerHTML; btnSubmit.innerHTML = "提交中… <span>Submitting…</span>";
+    var orig = btnSubmit.innerHTML; btnSubmit.innerHTML = bi("提交中…", "Submitting…");
 
     send(data).then(function (j) {
       if (j && j.ref) data.ref = j.ref;   // server is the authority on the reference no.
@@ -349,8 +402,8 @@
       btnSubmit.disabled = false; btnBack.disabled = false; btnSubmit.innerHTML = orig;
       resetTurnstile();
       showError(String(err && err.message) === "captcha"
-        ? "人機驗證未通過，請重新驗證後再提交。 Human check failed — please verify again and resubmit."
-        : "提交失敗，請檢查網絡後重試，或聯絡本會。 Submission failed — please check your connection and retry, or contact the Association.");
+        ? bi("人機驗證未通過，請重新驗證後再提交。", "Human check failed — please verify again and resubmit.")
+        : bi("提交失敗，請檢查網絡後重試，或聯絡本會。", "Submission failed — please check your connection and retry, or contact the Association."));
     });
   });
 
@@ -364,11 +417,12 @@
 
   function finish(d) {
     $("#refNo").textContent = d.ref;
-    var box = $("#doneNext"), basic = memberType() === "basic", pm = d.payMethod, html = "";
-    if (!basic) html = "<p><b>下一步：</b>本會審核你的學生身份後會以電郵通知。<br><span class='en'>Next: we will verify your student status and notify you by email.</span></p>";
-    else if (pm.indexOf("In person") > -1) html = "<p><b>下一步：</b>請親臨本會繳交會費 HK$" + C.FEE_BASIC + " 並出示申請編號。<br><span class='en'>Next: pay HK$" + C.FEE_BASIC + " in cash at the office, quoting your reference number.</span></p>";
-    else if (pm.indexOf("Cheque") > -1) html = "<p><b>下一步：</b>請將 HK$" + C.FEE_BASIC + " 支票（背面註明申請編號）交予本會。<br><span class='en'>Next: send a HK$" + C.FEE_BASIC + " cheque with your reference number on the back.</span></p>";
-    else html = "<p><b>下一步：</b>請轉賬 HK$" + C.FEE_BASIC + "，備註填寫申請編號" + (d.payFile ? "。" : "，並將轉賬截圖發送本會。") + "<br><span class='en'>Next: transfer HK$" + C.FEE_BASIC + " with your reference number in the remarks" + (d.payFile ? "." : " and send us the slip.") + "</span></p>";
+    var box = $("#doneNext"), basic = memberType() === "basic", pm = d.payMethod, f = C.FEE_BASIC, html = "";
+    function nx(zh, en) { return "<p><b>" + bi("下一步：", "Next:") + "</b> " + bi(zh, en) + "</p>"; }
+    if (!basic) html = nx("本會審核你的學生身份後會以電郵通知。", "we will verify your student status and notify you by email.");
+    else if (pm.indexOf("In person") > -1) html = nx("請親臨本會繳交會費 HK$" + f + " 並出示申請編號。", "pay HK$" + f + " in cash at the office, quoting your reference number.");
+    else if (pm.indexOf("Cheque") > -1) html = nx("請將 HK$" + f + " 支票（背面註明申請編號）交予本會。", "send a HK$" + f + " cheque with your reference number on the back.");
+    else html = nx("請轉賬 HK$" + f + "，備註填寫申請編號" + (d.payFile ? "。" : "，並將轉賬截圖發送本會。"), "transfer HK$" + f + " with your reference number in the remarks" + (d.payFile ? "." : " and send us the slip."));
     box.innerHTML = html;
     form.hidden = true; $("#steps").hidden = true; $("#demoBanner").hidden = true;
     $("#done").hidden = false;

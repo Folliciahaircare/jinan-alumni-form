@@ -4,18 +4,18 @@
   "use strict";
   // cc: dial code (digits) · m: mobile pattern · a: any-line pattern (home/office) · trunk: strip one leading 0
   var REGIONS = [
-    { cc: "852", n: "香港 HK", m: /^[4-9]\d{7}$/, a: /^[2-9]\d{7}$/, hint: "8 位數字 8 digits，例 e.g. 9123 4567" },
-    { cc: "86", n: "內地 CN", m: /^1[3-9]\d{9}$/, a: /^\d{10,12}$/, hint: "11 位手機號 11-digit mobile，例 e.g. 138 0013 8000" },
-    { cc: "853", n: "澳門 MO", m: /^6\d{7}$/, a: /^[268]\d{7}$/, hint: "8 位數字 8 digits，例 e.g. 6612 3456" },
-    { cc: "886", n: "台灣 TW", m: /^9\d{8}$/, a: /^\d{8,9}$/, trunk: 1, hint: "9 位手機（不含開頭 0） 9 digits without leading 0" },
-    { cc: "65", n: "新加坡 SG", m: /^[89]\d{7}$/, a: /^[3689]\d{7}$/, hint: "8 位數字 8 digits" },
-    { cc: "60", n: "馬來西亞 MY", m: /^1\d{8,9}$/, a: /^\d{8,10}$/, trunk: 1, hint: "不含開頭 0 without leading 0，例 e.g. 12 345 6789" },
-    { cc: "1", n: "美加 US/CA", m: /^[2-9]\d{9}$/, a: /^[2-9]\d{9}$/, hint: "10 位數字 10 digits" },
-    { cc: "44", n: "英國 UK", m: /^7\d{9}$/, a: /^\d{9,10}$/, trunk: 1, hint: "不含開頭 0 without leading 0，例 e.g. 7123 456789" },
-    { cc: "61", n: "澳洲 AU", m: /^4\d{8}$/, a: /^\d{9}$/, trunk: 1, hint: "不含開頭 0 without leading 0，例 e.g. 412 345 678" },
-    { cc: "81", n: "日本 JP", m: /^[789]0\d{8}$/, a: /^\d{9,10}$/, trunk: 1, hint: "不含開頭 0 without leading 0，例 90 1234 5678" },
-    { cc: "82", n: "韓國 KR", m: /^1\d{8,9}$/, a: /^\d{8,10}$/, trunk: 1, hint: "不含開頭 0 without leading 0" },
-    { cc: "", n: "其他 Other", m: /^\d{7,15}$/, a: /^\d{7,15}$/, hint: "連區號輸入全部數字 enter full number incl. country code，例 e.g. 4915123456789" }
+    { cc: "852", n: { zh: "香港", en: "HK" }, m: /^[4-9]\d{7}$/, a: /^[2-9]\d{7}$/, hint: { zh: "8 位數字，例 9123 4567", en: "8 digits, e.g. 9123 4567" } },
+    { cc: "86", n: { zh: "內地", en: "CN" }, m: /^1[3-9]\d{9}$/, a: /^\d{10,12}$/, hint: { zh: "11 位手機號，例 138 0013 8000", en: "11-digit mobile, e.g. 138 0013 8000" } },
+    { cc: "853", n: { zh: "澳門", en: "MO" }, m: /^6\d{7}$/, a: /^[268]\d{7}$/, hint: { zh: "8 位數字，例 6612 3456", en: "8 digits, e.g. 6612 3456" } },
+    { cc: "886", n: { zh: "台灣", en: "TW" }, m: /^9\d{8}$/, a: /^\d{8,9}$/, trunk: 1, hint: { zh: "9 位手機號（不含開頭 0）", en: "9 digits, without the leading 0" } },
+    { cc: "65", n: { zh: "新加坡", en: "SG" }, m: /^[89]\d{7}$/, a: /^[3689]\d{7}$/, hint: { zh: "8 位數字", en: "8 digits" } },
+    { cc: "60", n: { zh: "馬來西亞", en: "MY" }, m: /^1\d{8,9}$/, a: /^\d{8,10}$/, trunk: 1, hint: { zh: "不含開頭 0，例 12 345 6789", en: "without the leading 0, e.g. 12 345 6789" } },
+    { cc: "1", n: { zh: "美加", en: "US/CA" }, m: /^[2-9]\d{9}$/, a: /^[2-9]\d{9}$/, hint: { zh: "10 位數字", en: "10 digits" } },
+    { cc: "44", n: { zh: "英國", en: "UK" }, m: /^7\d{9}$/, a: /^\d{9,10}$/, trunk: 1, hint: { zh: "不含開頭 0，例 7123 456789", en: "without the leading 0, e.g. 7123 456789" } },
+    { cc: "61", n: { zh: "澳洲", en: "AU" }, m: /^4\d{8}$/, a: /^\d{9}$/, trunk: 1, hint: { zh: "不含開頭 0，例 412 345 678", en: "without the leading 0, e.g. 412 345 678" } },
+    { cc: "81", n: { zh: "日本", en: "JP" }, m: /^[789]0\d{8}$/, a: /^\d{9,10}$/, trunk: 1, hint: { zh: "不含開頭 0，例 90 1234 5678", en: "without the leading 0, e.g. 90 1234 5678" } },
+    { cc: "82", n: { zh: "韓國", en: "KR" }, m: /^1\d{8,9}$/, a: /^\d{8,10}$/, trunk: 1, hint: { zh: "不含開頭 0", en: "without the leading 0" } },
+    { cc: "", n: { zh: "其他", en: "Other" }, m: /^\d{7,15}$/, a: /^\d{7,15}$/, hint: { zh: "連區號輸入全部數字，例 4915123456789", en: "enter the full number incl. country code, e.g. 4915123456789" } }
   ];
   function region(cc) { for (var i = 0; i < REGIONS.length; i++) if (REGIONS[i].cc === cc) return REGIONS[i]; return REGIONS[REGIONS.length - 1]; }
 
@@ -30,7 +30,10 @@
     return { ok: ok, national: d, full: ok ? (r.cc ? "+" + r.cc + " " + d : "+" + d) : "", region: r };
   }
   function fill(sel) {
-    sel.innerHTML = REGIONS.map(function (r) { return '<option value="' + r.cc + '">' + (r.cc ? "+" + r.cc : "+") + " " + r.n + "</option>"; }).join("");
+    var pre = function (r) { return r.cc ? "+" + r.cc : "+"; };
+    sel.innerHTML = REGIONS.map(function (r) {
+      return '<option value="' + r.cc + '" data-zh="' + pre(r) + " " + r.n.zh + '" data-en="' + pre(r) + " " + r.n.en + '">' + pre(r) + " " + r.n.zh + "</option>";
+    }).join("");
     sel.value = "852";
   }
   /** If the user pastes "+86 138…" into the number box, switch the region picker and strip the code. */
