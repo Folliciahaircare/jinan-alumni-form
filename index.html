@@ -98,7 +98,9 @@
       <div class="grid">
         <div class="field">
           <label for="mobile">手提電話 <span class="en">Mobile</span> <b class="req">*</b></label>
-          <input id="mobile" name="mobile" type="tel" inputmode="tel" required autocomplete="tel" placeholder="+852 …">
+          <div class="phone"><select class="cc" id="mobileCc" name="mobileCc" aria-label="區號 Country / region code"></select>
+          <input id="mobile" name="mobile" type="tel" inputmode="tel" required autocomplete="tel-national"></div>
+          <p class="hint" id="mobileHint"></p>
         </div>
         <fieldset class="field">
           <legend>此號碼可用 WhatsApp / WeChat？ <span class="en">Reachable on WhatsApp / WeChat?</span></legend>
@@ -113,7 +115,8 @@
         </div>
         <div class="field">
           <label for="homeTel">家居電話 <span class="en">Home Tel.</span></label>
-          <input id="homeTel" name="homeTel" type="tel" inputmode="tel" autocomplete="tel-national">
+          <div class="phone"><select class="cc" id="homeTelCc" name="homeTelCc" aria-label="區號 Country / region code"></select>
+          <input id="homeTel" name="homeTel" type="tel" inputmode="tel"></div>
         </div>
         <div class="field">
           <label for="fax">傳真 <span class="en">Fax</span></label>
@@ -439,6 +442,7 @@
 
 <script src="js/config.js"></script>
 <script src="js/vendor/opencc-t2cn.js"></script>
+<script src="js/phone.js"></script>
 <script src="js/form.js"></script>
 <script src="js/lang.js"></script>
 </body>

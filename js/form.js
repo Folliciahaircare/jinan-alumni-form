@@ -51,6 +51,20 @@
   fillDl("#payCheque", [["抬頭 Payable to", P.chequePayableTo], ["郵寄地址 Mail to", P.officeAddress]]);
   fillDl("#payBank", [["戶名 Payee", P.payee], ["銀行 Bank", P.bank], ["帳號 Account", P.account], ["轉數快 FPS", P.fps]]);
 
+  /* ---------- phone region pickers ---------- */
+  var PH = window.JNU_PHONE;
+  [["mobile", "mobile"], ["homeTel", "any"]].forEach(function (p) {
+    var sel = $("#" + p[0] + "Cc"), inp = $("#" + p[0]);
+    PH.fill(sel);
+    function hint() { if (p[0] !== "mobile") return; $("#mobileHint").textContent = PH.region(sel.value).hint; inp.placeholder = ""; }
+    sel.addEventListener("change", hint); hint();
+    inp.addEventListener("input", function () { PH.autodetect(sel, inp); });
+  });
+  function phoneFull(id, kind) {
+    var raw = val(id); if (!raw) return "";
+    var r = PH.check($("#" + id + "Cc").value, raw, kind); return r.ok ? r.full : raw;
+  }
+
   /* ---------- year selects / dates ---------- */
   var thisYear = new Date().getFullYear();
   function yearOptions(sel, from, to, blank) {
@@ -112,7 +126,10 @@
       var v = el.value.trim();
       if (el.required && !v) { mark(el, MSG); bad.push(el); return; }
       if (v && el.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { mark(el, "電郵格式不正確 Invalid email"); bad.push(el); }
-      if (v && el.name === "mobile" && v.replace(/\D/g, "").length < 8) { mark(el, "電話號碼不正確 Invalid number"); bad.push(el); }
+      if (v && (el.name === "mobile" || el.name === "homeTel")) {
+        var pr = PH.check($("#" + el.name + "Cc").value, v, el.name === "mobile" ? "mobile" : "any");
+        if (!pr.ok) { mark(el, "電話號碼與所選地區不符，請檢查 Number doesn't match the selected region — " + pr.region.hint); bad.push(el); }
+      }
       if (v && el.name === "hkid" && !/^[A-Za-z]{1,2}\d{6}\(?[0-9Aa]\)?$/.test(v.replace(/\s/g, ""))) { mark(el, "格式例：A123456(7) e.g. A123456(7)"); bad.push(el); }
     });
     if (n === 1) {
@@ -270,7 +287,7 @@
       ref: ref, submittedAt: new Date().toISOString(),
       cnName: val("cnName"), enName: val("enName"), gender: ($('input[name="gender"]:checked') || {}).value || "",
       dob: val("dob"), hkid: val("hkid").toUpperCase(), nationality: val("nationality"), ancestry: val("ancestry"),
-      mobile: val("mobile"), chatApps: chat.join(" / "), email: val("email"), homeTel: val("homeTel"), fax: val("fax"),
+      mobile: phoneFull("mobile", "mobile"), chatApps: chat.join(" / "), email: val("email"), homeTel: phoneFull("homeTel", "any"), fax: val("fax"),
       address: val("address"), corrAddress: val("corrAddress"),
       enrolYear: val("enrolYear"), gradYear: val("gradYear"), college: withOther("college", "collegeOther", function (v) { return v === "其他"; }), major: val("major"), eduLevel: val("eduLevel"),
       district: withOther("district", "districtOther", function (v) { return /^香港以外/.test(v); }),

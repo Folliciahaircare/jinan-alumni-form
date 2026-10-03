@@ -132,3 +132,4 @@ input[type=file]{padding:9px;font-size:15px}
 .langsw button{font:inherit;font-size:15px;font-weight:700;background:transparent;color:var(--navy);border:0;padding:6px 14px;cursor:pointer;min-height:36px}
 .langsw button[aria-pressed="true"]{background:var(--navy);color:#fff}
 .ts{margin:4px 0 14px}
+.phone{display:flex;gap:8px}.phone .cc{flex:0 0 auto;width:auto;max-width:46%;padding-left:8px;padding-right:4px}.phone input{flex:1;min-width:0}
