@@ -127,3 +127,8 @@ input[type=file]{padding:9px;font-size:15px}
   body{background:#fff}
   #done{box-shadow:none}
 }
+
+.langsw{margin-left:auto;display:flex;border:1.5px solid var(--navy);border-radius:8px;overflow:hidden;flex:none}
+.langsw button{font:inherit;font-size:15px;font-weight:700;background:transparent;color:var(--navy);border:0;padding:6px 14px;cursor:pointer;min-height:36px}
+.langsw button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.ts{margin:4px 0 14px}

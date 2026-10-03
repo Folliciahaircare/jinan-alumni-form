@@ -7,6 +7,10 @@ window.JNU_CONFIG = {
   // Leave empty to run in DEMO mode (nothing is sent anywhere).
   ENDPOINT: "https://jnuhkaa-join-api.folliciahaircare.workers.dev/api/apply",
 
+  // Cloudflare Turnstile site key (public). Leave empty to disable the human check.
+  // The matching secret lives in the Worker (TURNSTILE_SECRET).
+  TURNSTILE_SITEKEY: "",
+
   // Logo: replace assets/logo.svg, or point this at e.g. "assets/logo.png"
   LOGO: "assets/logo.svg",
 

@@ -76,7 +76,7 @@
     btnNext.hidden = n === steps.length - 1;
     btnSubmit.hidden = n !== steps.length - 1;
     hideError();
-    if (n === steps.length - 1) buildSummary();
+    if (n === steps.length - 1) { buildSummary(); initTurnstile(); }
     var top = $(".title").getBoundingClientRect().top + window.pageYOffset - 8;
     window.scrollTo({ top: top, behavior: "smooth" });
   }
@@ -167,23 +167,95 @@
   $$('input[name="memberType"]').forEach(function (r) { r.addEventListener("change", syncMembership); });
   $$('input[name="payMethod"]').forEach(function (r) { r.addEventListener("change", syncPay); });
 
-  /* ---------- file handling ---------- */
+  /* ---------- file handling (photos are resized in the browser) ---------- */
+  var MAXB = C.MAX_FILE_MB * 1024 * 1024, KEEP = 1.5 * 1024 * 1024, MAXDIM = 2000;
+  function loadBitmap(f) {
+    if (window.createImageBitmap) {
+      return createImageBitmap(f, { imageOrientation: "from-image" }).catch(function () { return viaImg(f); });
+    }
+    return viaImg(f);
+  }
+  function viaImg(f) {
+    return new Promise(function (res, rej) {
+      var u = URL.createObjectURL(f), im = new Image();
+      im.onload = function () { URL.revokeObjectURL(u); res(im); };
+      im.onerror = function () { URL.revokeObjectURL(u); rej(new Error("unreadable")); };
+      im.src = u;
+    });
+  }
+  function toBlob(cv, q) { return new Promise(function (r) { cv.toBlob(r, "image/jpeg", q); }); }
+  function shrink(f) {
+    return loadBitmap(f).then(function (bm) {
+      var w = bm.width, h = bm.height, sc = Math.min(1, MAXDIM / Math.max(w, h));
+      if (sc === 1 && f.size <= KEEP && /^image\/(jpeg|png)$/.test(f.type)) return { blob: f, name: f.name, resized: false };
+      var cv = document.createElement("canvas");
+      return (function attempt(scale, q) {
+        cv.width = Math.round(w * scale); cv.height = Math.round(h * scale);
+        var cx = cv.getContext("2d"); cx.fillStyle = "#fff"; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(bm, 0, 0, cv.width, cv.height);
+        return toBlob(cv, q).then(function (b) {
+          if (!b) throw new Error("unreadable");
+          if (b.size > 1.8 * 1024 * 1024 && q > 0.55) return attempt(scale, q - 0.1);
+          if (b.size > 1.8 * 1024 * 1024 && scale > 0.4) return attempt(scale * 0.75, 0.8);
+          return { blob: b, name: f.name.replace(/\.[^.]+$/, "") + ".jpg", resized: true };
+        });
+      })(sc, 0.85);
+    });
+  }
+  function toB64(blob) {
+    return new Promise(function (res, rej) {
+      var fr = new FileReader();
+      fr.onload = function () { res(String(fr.result).split(",")[1]); };
+      fr.onerror = function () { rej(new Error("read")); };
+      fr.readAsDataURL(blob);
+    });
+  }
   function readFile(inp) {
     var key = inp.getAttribute("data-key"), label = $("#" + inp.id + "Name"), f = inp.files[0];
-    files[key] = null; label.textContent = ""; label.style.color = ""; inp.closest(".field").classList.remove("invalid");
+    files[key] = null; label.textContent = ""; inp.closest(".field").classList.remove("invalid");
     var old = inp.closest(".field").querySelector(".msg"); if (old) old.remove();
     if (!f) return;
-    if (f.size > C.MAX_FILE_MB * 1024 * 1024) { inp.value = ""; mark(inp, "檔案超過 " + C.MAX_FILE_MB + "MB File too large"); return; }
-    if (!/^(image\/(jpeg|png)|application\/pdf)$/.test(f.type)) { inp.value = ""; mark(inp, "只接受 JPG／PNG／PDF Only JPG/PNG/PDF"); return; }
-    var fr = new FileReader(); pending++;
-    fr.onload = function () {
-      pending--;
-      files[key] = { name: f.name, type: f.type, size: f.size, data: String(fr.result).split(",")[1] };
-      label.textContent = "✓ " + f.name + " (" + Math.round(f.size / 1024) + " KB)";
-    };
-    fr.readAsDataURL(f);
+    var isImg = /^image\//.test(f.type), isPdf = f.type === "application/pdf";
+    function reject(msg) { inp.value = ""; files[key] = null; label.textContent = ""; mark(inp, msg); }
+    if (!isImg && !isPdf) return reject("只接受相片或 PDF Only photos or PDF");
+    if (isPdf && f.size > MAXB) return reject("PDF 超過 " + C.MAX_FILE_MB + "MB PDF too large");
+    if (isImg && f.size > 40 * 1024 * 1024) return reject("相片過大 Photo too large");
+    pending++; label.textContent = "處理中… Processing…";
+    (isImg ? shrink(f) : Promise.resolve({ blob: f, name: f.name, resized: false }))
+      .then(function (r) {
+        if (r.blob.size > MAXB) throw new Error("big");
+        return toB64(r.blob).then(function (b64) {
+          files[key] = { name: r.name, type: r.blob.type, size: r.blob.size, data: b64 };
+          label.textContent = "✓ " + r.name + " (" + Math.round(r.blob.size / 1024) + " KB" + (r.resized ? "，已自動縮小 resized" : "") + ")";
+        });
+      })
+      .catch(function (e) { reject(e.message === "big" ? "檔案仍超過 " + C.MAX_FILE_MB + "MB File still too large" : "無法讀取檔案，請改用 JPG／PNG Cannot read file — try JPG/PNG"); })
+      .then(function () { pending--; });
   }
   $$('input[type="file"]').forEach(function (i) { i.addEventListener("change", function () { readFile(i); }); });
+
+  /* ---------- bot check (Cloudflare Turnstile) ---------- */
+  var tsToken = "", tsId = null;
+  function initTurnstile() {
+    if (!C.TURNSTILE_SITEKEY) return;
+    $("#tsWrap").hidden = false;
+    if (tsId !== null) return;
+    function render() {
+      tsId = window.turnstile.render("#tsBox", {
+        sitekey: C.TURNSTILE_SITEKEY,
+        language: (window.JNU_LANG && JNU_LANG.get() === "hans") ? "zh-cn" : "zh-tw",
+        callback: function (t) { tsToken = t; hideError(); },
+        "expired-callback": function () { tsToken = ""; },
+        "error-callback": function () { tsToken = ""; }
+      });
+    }
+    if (window.turnstile) return render();
+    var s = document.createElement("script");
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"; s.async = true;
+    s.onload = render;
+    s.onerror = function () { showError("無法載入驗證，請重新整理。 Could not load the human check — please refresh."); };
+    document.head.appendChild(s);
+  }
+  function resetTurnstile() { tsToken = ""; if (tsId !== null && window.turnstile) window.turnstile.reset(tsId); }
 
   /* ---------- data collection ---------- */
   function val(name) { var e = form.elements[name]; return e ? String(e.value || "").trim() : ""; }
@@ -209,7 +281,8 @@
       memberType: memberType() === "basic" ? "基本會員 Basic" : "學生會員 Student",
       fee: memberType() === "basic" ? C.FEE_BASIC : 0,
       payMethod: memberType() === "basic" ? (($('input[name="payMethod"]:checked') || {}).value || "") : "",
-      consent: (($('input[name="consent"]:checked') || {}).value || "") + " [PICS " + PICS_VERSION + "]",
+      consent: (($('input[name="consent"]:checked') || {}).value || "") + " [PICS " + PICS_VERSION + " " + (window.JNU_LANG ? JNU_LANG.get() : "hant") + "]",
+      lang: window.JNU_LANG ? JNU_LANG.get() : "hant", turnstileToken: tsToken,
       signName: val("signName"), signDate: val("signDate"),
       userAgent: navigator.userAgent, website: val("website"), elapsedMs: Date.now() - openedAt,
       docFile: files.doc, payFile: $("#payProofWrap").hidden ? null : files.pay
@@ -245,6 +318,7 @@
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     if (!validateStep(cur)) return;
+    if (C.TURNSTILE_SITEKEY && !tsToken) { showError("請先完成人機驗證。 Please complete the human check first."); return; }
     if (pending > 0) { showError("檔案仍在讀取，請稍候再試。 File still loading, please retry."); return; }
     var ref = makeRef(), data = collect(ref);
     btnSubmit.disabled = true; btnBack.disabled = true;
@@ -256,7 +330,10 @@
     }).catch(function (err) {
       console.error(err);
       btnSubmit.disabled = false; btnBack.disabled = false; btnSubmit.innerHTML = orig;
-      showError("提交失敗，請檢查網絡後重試，或聯絡本會。 Submission failed — please check your connection and retry, or contact the Association.");
+      resetTurnstile();
+      showError(String(err && err.message) === "captcha"
+        ? "人機驗證未通過，請重新驗證後再提交。 Human check failed — please verify again and resubmit."
+        : "提交失敗，請檢查網絡後重試，或聯絡本會。 Submission failed — please check your connection and retry, or contact the Association.");
     });
   });
 

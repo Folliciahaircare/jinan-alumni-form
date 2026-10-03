@@ -17,6 +17,9 @@
       <div class="org-zh" id="orgZh">暨南大學香港校友會</div>
       <div class="org-en" id="orgEn">Jinan University Hong Kong Alumni Association</div>
     </div>
+    <div class="langsw" role="group" aria-label="Language 語言">
+      <button type="button" data-lang="hant" aria-pressed="true">繁</button><button type="button" data-lang="hans" aria-pressed="false">简</button>
+    </div>
   </div>
 </header>
 
@@ -281,9 +284,9 @@
 
       <div class="field">
         <label for="docFile">身份證明文件 <span class="en">Proof of Eligibility</span></label>
-        <input id="docFile" name="docFile" type="file" accept="image/jpeg,image/png,application/pdf" data-key="doc">
-        <p class="hint">基本會員：學生證或畢業證書；學生會員：學生證。JPG／PNG／PDF，不超過 <span class="mb">5</span>MB。<br>
-          <span class="en">Basic: student card or graduation certificate. Student: student card. JPG/PNG/PDF, max <span class="mb">5</span>MB.</span></p>
+        <input id="docFile" name="docFile" type="file" accept="image/*,application/pdf" data-key="doc">
+        <p class="hint">基本會員：學生證或畢業證書；學生會員：學生證。相片會自動縮小；PDF 不超過 <span class="mb">5</span>MB。<br>
+          <span class="en">Basic: student card or graduation certificate. Student: student card. Photos are resized automatically; PDFs max <span class="mb">5</span>MB.</span></p>
         <p class="filename" id="docFileName"></p>
       </div>
 
@@ -318,7 +321,7 @@
 
         <div class="field" id="payProofWrap" hidden>
           <label for="payFile">付款證明（轉賬截圖／支票副本）<span class="en">Payment proof (transfer slip / cheque copy)</span></label>
-          <input id="payFile" name="payFile" type="file" accept="image/jpeg,image/png,application/pdf" data-key="pay">
+          <input id="payFile" name="payFile" type="file" accept="image/*,application/pdf" data-key="pay">
           <p class="hint">選填，可日後補交。<span class="en">Optional — can be sent later.</span></p>
           <p class="filename" id="payFileName"></p>
         </div>
@@ -400,6 +403,11 @@
       </details>
     </section>
 
+    <div id="tsWrap" class="ts" hidden>
+      <p class="hint">請完成下方驗證，確認你不是機械人。 <span class="en">Please complete the check below to confirm you are human.</span></p>
+      <div id="tsBox"></div>
+    </div>
+
     <p class="error" id="formError" role="alert" hidden></p>
 
     <div class="nav">
@@ -430,6 +438,8 @@
 </footer>
 
 <script src="js/config.js"></script>
+<script src="js/vendor/opencc-t2cn.js"></script>
 <script src="js/form.js"></script>
+<script src="js/lang.js"></script>
 </body>
 </html>
