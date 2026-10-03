@@ -28,10 +28,11 @@
   </div>
 
   <ol class="steps" id="steps" aria-label="進度 Progress">
-    <li><i>1</i><span>個人資料<small>Personal</small></span></li>
-    <li><i>2</i><span>聯絡及學歷<small>Contact &amp; Study</small></span></li>
-    <li><i>3</i><span>會籍及繳費<small>Membership</small></span></li>
-    <li><i>4</i><span>聲明及提交<small>Declaration</small></span></li>
+    <li><i>1</i><span>個人<small>Personal</small></span></li>
+    <li><i>2</i><span>聯絡學歷<small>Contact</small></span></li>
+    <li><i>3</i><span>職業活動<small>Career</small></span></li>
+    <li><i>4</i><span>會籍繳費<small>Membership</small></span></li>
+    <li><i>5</i><span>聲明提交<small>Declare</small></span></li>
   </ol>
 
   <div id="demoBanner" class="notice warn" hidden>
@@ -124,6 +125,16 @@
         <label for="corrAddress">通訊地址 <span class="en">Correspondence Address (if different)</span></label>
         <textarea id="corrAddress" name="corrAddress" rows="2"></textarea>
       </div>
+      <div class="grid">
+        <div class="field">
+          <label for="district">在港居住區域 <span class="en">District of residence</span></label>
+          <select id="district" name="district"><option value="">— 請選擇 Please select —</option><option value="中西區 Central & Western">中西區 Central & Western</option><option value="灣仔區 Wan Chai">灣仔區 Wan Chai</option><option value="東區 Eastern">東區 Eastern</option><option value="南區 Southern">南區 Southern</option><option value="油尖旺區 Yau Tsim Mong">油尖旺區 Yau Tsim Mong</option><option value="深水埗區 Sham Shui Po">深水埗區 Sham Shui Po</option><option value="九龍城區 Kowloon City">九龍城區 Kowloon City</option><option value="黃大仙區 Wong Tai Sin">黃大仙區 Wong Tai Sin</option><option value="觀塘區 Kwun Tong">觀塘區 Kwun Tong</option><option value="荃灣區 Tsuen Wan">荃灣區 Tsuen Wan</option><option value="屯門區 Tuen Mun">屯門區 Tuen Mun</option><option value="元朗區 Yuen Long">元朗區 Yuen Long</option><option value="北區 North">北區 North</option><option value="大埔區 Tai Po">大埔區 Tai Po</option><option value="西貢區 Sai Kung">西貢區 Sai Kung</option><option value="沙田區 Sha Tin">沙田區 Sha Tin</option><option value="葵青區 Kwai Tsing">葵青區 Kwai Tsing</option><option value="離島區 Islands">離島區 Islands</option><option value="香港以外 Outside Hong Kong">香港以外 Outside Hong Kong</option></select>
+        </div>
+        <div class="field" id="districtOtherWrap" hidden>
+          <label for="districtOther">城市／地區 <span class="en">City / region</span></label>
+          <input id="districtOther" name="districtOther">
+        </div>
+      </div>
 
       <h2>暨南大學學歷 <span>Study at Jinan University</span></h2>
       <div class="grid">
@@ -138,7 +149,8 @@
         </div>
         <div class="field">
           <label for="college">所屬學院 <span class="en">College / School</span> <b class="req">*</b></label>
-          <input id="college" name="college" required>
+          <select id="college" name="college" required><option value="">— 請選擇 Please select —</option><option value="管理學院">管理學院 Management</option><option value="經濟學院">經濟學院 Economics</option><option value="文學院">文學院 Humanities</option><option value="新聞與傳播學院">新聞與傳播學院 Journalism & Communication</option><option value="信息科學技術學院">信息科學技術學院 Information Science & Technology</option><option value="國際商學院">國際商學院 International Business</option><option value="理工學院">理工學院 Science & Engineering</option><option value="藥學院">藥學院 Pharmacy</option><option value="醫學院 / 基礎醫學院">醫學院 / 基礎醫學院 Medicine / Basic Medical Sciences</option><option value="外國語學院">外國語學院 Foreign Studies</option><option value="華文學院">華文學院 Chinese Language</option><option value="深圳旅遊學院">深圳旅遊學院 Shenzhen Tourism</option><option value="生命科學技術學院">生命科學技術學院 Life Science & Technology</option><option value="公共管理學院 / 應急管理學院">公共管理學院 / 應急管理學院 Public Administration / Emergency Management</option><option value="法學院 / 知識產權學院">法學院 / 知識產權學院 Law / Intellectual Property</option><option value="化學與材料學院">化學與材料學院 Chemistry & Materials</option><option value="國際學院">國際學院 International School</option><option value="電氣工程學院">電氣工程學院 Electrical Engineering</option><option value="教育學院">教育學院 Education</option><option value="藝術學院">藝術學院 Arts</option><option value="體育學院">體育學院 Physical Education</option><option value="翻譯學院">翻譯學院 Translation</option><option value="環境學院">環境學院 Environment</option><option value="智能科學與工程學院">智能科學與工程學院 Intelligent Science & Engineering</option><option value="暨南大學伯明罕大學聯合學院">暨南大學伯明罕大學聯合學院 JNU-Birmingham Joint Institute</option><option value="其他">其他 Other (please specify)</option></select>
+          <input id="collegeOther" name="collegeOther" placeholder="如選「其他」請註明 If Other, specify" style="margin-top:8px" hidden>
         </div>
         <div class="field">
           <label for="major">專業 <span class="en">Major</span> <b class="req">*</b></label>
@@ -146,27 +158,40 @@
         </div>
         <div class="field">
           <label for="eduLevel">學歷 <span class="en">Educational Level</span></label>
-          <select id="eduLevel" name="eduLevel">
-            <option value="">— 請選擇 Please select —</option>
-            <option>預科／進修 Foundation / Continuing Ed.</option>
-            <option>大專 Associate / Diploma</option>
-            <option>學士 Bachelor</option>
-            <option>碩士 Master</option>
-            <option>博士 Doctorate</option>
-            <option>教職員 Staff / Faculty</option>
-            <option>其他 Other</option>
-          </select>
+          <select id="eduLevel" name="eduLevel"><option value="">— 請選擇 Please select —</option><option value="本科 Bachelor">本科 Bachelor</option><option value="碩士研究生 Master">碩士研究生 Master</option><option value="博士研究生 Doctorate">博士研究生 Doctorate</option><option value="副學士／高級文憑 Associate / Higher Diploma">副學士／高級文憑 Associate / Higher Diploma</option><option value="教職員 Staff / Faculty">教職員 Staff / Faculty</option><option value="其他 Other">其他 Other</option></select>
         </div>
       </div>
 
+    </section>
+
+    <!-- ============ STEP 3 (new): career & community ============ -->
+    <section class="step" data-step="3" hidden>
       <h2>職業資料 <span>Occupation (optional)</span></h2>
       <div class="grid">
+        <fieldset class="field" style="grid-column:1/-1">
+          <legend>目前職業狀態 <span class="en">Current status</span></legend>
+<div class="choices stack two">
+  <label class="choice"><input type="radio" name="workStatus" value="在職"><span>在職 <span class="en">Employed</span></span></label>
+  <label class="choice"><input type="radio" name="workStatus" value="在讀（碩/博/博後）"><span>在讀（碩／博／博後） <span class="en">Studying (Master / PhD / Postdoc)</span></span></label>
+  <label class="choice"><input type="radio" name="workStatus" value="創業"><span>創業 <span class="en">Entrepreneur</span></span></label>
+  <label class="choice"><input type="radio" name="workStatus" value="自由職業"><span>自由職業 <span class="en">Freelance</span></span></label>
+  <label class="choice"><input type="radio" name="workStatus" value="待業／求職"><span>待業／求職 <span class="en">Between jobs / job seeking</span></span></label>
+  <label class="choice"><input type="radio" name="workStatus" value="退休"><span>退休 <span class="en">Retired</span></span></label>
+  <label class="choice"><input type="radio" name="workStatus" value="其他"><span>其他 <span class="en">Other</span></span></label>
+</div>
+        </fieldset>
         <div class="field">
-          <label for="company">公司名稱 <span class="en">Name of Company</span></label>
-          <input id="company" name="company" autocomplete="organization">
+          <label for="industry">所在行業 <span class="en">Industry</span></label>
+          <select id="industry" name="industry"><option value="">— 請選擇 Please select —</option><option value="金融／銀行／證券／保險／基金 Finance / Banking / Securities / Insurance / Funds">金融／銀行／證券／保險／基金 Finance / Banking / Securities / Insurance / Funds</option><option value="會計／審計／稅務 Accounting / Audit / Tax">會計／審計／稅務 Accounting / Audit / Tax</option><option value="法律／仲裁／專業服務 Legal / Arbitration / Professional services">法律／仲裁／專業服務 Legal / Arbitration / Professional services</option><option value="貿易／進出口／供應鏈 Trade / Import-export / Supply chain">貿易／進出口／供應鏈 Trade / Import-export / Supply chain</option><option value="互聯網／科技／通訊／AI Internet / Tech / Telecom / AI">互聯網／科技／通訊／AI Internet / Tech / Telecom / AI</option><option value="地產／建築／工程／測量 Property / Construction / Engineering / Surveying">地產／建築／工程／測量 Property / Construction / Engineering / Surveying</option><option value="醫療／醫藥／生物科技 Healthcare / Pharma / Biotech">醫療／醫藥／生物科技 Healthcare / Pharma / Biotech</option><option value="教育／科研／高校 Education / Research / Universities">教育／科研／高校 Education / Research / Universities</option><option value="傳媒／廣告／公關／新媒體 Media / Advertising / PR / New media">傳媒／廣告／公關／新媒體 Media / Advertising / PR / New media</option><option value="零售／消費／餐飲／旅遊 Retail / Consumer / F&B / Tourism">零售／消費／餐飲／旅遊 Retail / Consumer / F&B / Tourism</option><option value="政府／公營機構／非營利組織 Government / Public sector / NGO">政府／公營機構／非營利組織 Government / Public sector / NGO</option><option value="文化／藝術／體育 Culture / Arts / Sports">文化／藝術／體育 Culture / Arts / Sports</option><option value="其他 Other (please specify)">其他 Other (please specify)</option></select>
+          <input id="industryOther" name="industryOther" placeholder="如選「其他」請註明 If Other, specify" style="margin-top:8px" hidden>
         </div>
         <div class="field">
-          <label for="position">職位 <span class="en">Position</span></label>
+          <label for="company">機構／公司名稱 <span class="en">Company / Organisation</span></label>
+          <input id="company" name="company" autocomplete="organization">
+          <p class="hint">自由職業可填「無」 <span class="en">Freelancers may enter “None”</span></p>
+        </div>
+        <div class="field">
+          <label for="position">職位／職稱 <span class="en">Position</span></label>
           <input id="position" name="position" autocomplete="organization-title">
         </div>
         <div class="field">
@@ -178,10 +203,61 @@
           <input id="publicService" name="publicService">
         </div>
       </div>
+
+      <h2>校友活動及參與 <span>Community &amp; interests (optional)</span></h2>
+      <p class="lead small">幫助我們策劃活動，全部選填。<span class="en">Helps us plan activities — all optional.</span></p>
+      <fieldset class="field"><legend>是否願意擔任「職場導師」，為年輕校友分享經驗？ <span class="en">Willing to be a career mentor for younger alumni?</span></legend>
+<div class="choices stack">
+  <label class="choice"><input type="radio" name="mentor" value="願意，歡迎聯絡我"><span>願意，歡迎聯絡我 <span class="en">Yes, please contact me</span></span></label>
+  <label class="choice"><input type="radio" name="mentor" value="可以考慮"><span>可以考慮 <span class="en">Maybe</span></span></label>
+  <label class="choice"><input type="radio" name="mentor" value="不擔任導師，但我需要導師"><span>暫時不需要，但我需要導師 <span class="en">Not now, but I'd like a mentor</span></span></label>
+  <label class="choice"><input type="radio" name="mentor" value="暫不參與"><span>暫不參與 <span class="en">Not participating</span></span></label>
+</div></fieldset>
+      <fieldset class="field"><legend>感興趣的校友活動（可多選） <span class="en">Activities you are interested in (multiple)</span></legend>
+<div class="choices stack two">
+  <label class="choice"><input type="checkbox" name="interests" value="行業分享／晚宴"><span>行業分享／晚宴（金融／法律／專業服務等） <span class="en">Industry talks / dinners</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="職場導師計劃"><span>職場導師計劃 <span class="en">Mentoring programme</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="地區聚會／茶敘"><span>地區聚會／茶敘（港島／九龍／新界） <span class="en">District gatherings / tea meetups</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="升學／留學指導"><span>升學／留學指導（香港／海外） <span class="en">Further-study guidance (HK / overseas)</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="內地發展交流"><span>內地發展交流（大灣區／內地就業） <span class="en">Mainland / Greater Bay Area career exchange</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="粵港／滬港交流"><span>粵港／滬港校友聯誼 <span class="en">Guangdong–HK / Shanghai–HK alumni exchange</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="單身聯誼活動"><span>單身聯誼活動 <span class="en">Singles social events</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="親子／家庭日"><span>親子／家庭日 <span class="en">Family days</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="年度校友聯歡"><span>年度校友聯歡 <span class="en">Annual alumni gathering</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="體育／文體活動"><span>體育／文體活動（球賽、行山等） <span class="en">Sports & recreation (ball games, hiking…)</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="公益／義工服務"><span>公益／義工服務 <span class="en">Charity / volunteering</span></span></label>
+  <label class="choice"><input type="checkbox" name="interests" value="都不太感興趣"><span>都不太感興趣 <span class="en">None of these</span></span></label>
+</div></fieldset>
+      <fieldset class="field"><legend>希望在校友會擔任的角色（可多選） <span class="en">Roles you would like to take (multiple)</span></legend>
+<div class="choices stack two">
+  <label class="choice"><input type="checkbox" name="roles" value="地區聯絡人"><span>地區聯絡人（港島／九龍／新界負責人） <span class="en">District coordinator (HK Island / Kowloon / NT)</span></span></label>
+  <label class="choice"><input type="checkbox" name="roles" value="學院聯絡人"><span>學院聯絡人 <span class="en">College / school liaison</span></span></label>
+  <label class="choice"><input type="checkbox" name="roles" value="活動義工"><span>活動義工 <span class="en">Event volunteer</span></span></label>
+  <label class="choice"><input type="checkbox" name="roles" value="分享嘉賓"><span>分享嘉賓 <span class="en">Guest speaker</span></span></label>
+  <label class="choice"><input type="checkbox" name="roles" value="普通會員即可"><span>普通會員即可 <span class="en">Regular member only</span></span></label>
+</div></fieldset>
+      <fieldset class="field"><legend>偏好的地區社群 <span class="en">Preferred district group</span></legend>
+<div class="choices stack">
+  <label class="choice"><input type="radio" name="cluster" value="港島"><span>港島（中西／灣仔／東／南） <span class="en">Hong Kong Island</span></span></label>
+  <label class="choice"><input type="radio" name="cluster" value="九龍"><span>九龍（油尖旺／深水埗／九龍城／黃大仙／觀塘） <span class="en">Kowloon</span></span></label>
+  <label class="choice"><input type="radio" name="cluster" value="新界東"><span>新界東（沙田／大埔／北區／西貢） <span class="en">New Territories East</span></span></label>
+  <label class="choice"><input type="radio" name="cluster" value="新界西"><span>新界西（荃灣／屯門／元朗／葵青／離島） <span class="en">New Territories West</span></span></label>
+  <label class="choice"><input type="radio" name="cluster" value="暫不確定"><span>暫不確定 <span class="en">Not sure</span></span></label>
+</div></fieldset>
+      <fieldset class="field"><legend>是否願意接收校友會的「內推／招聘資訊」？ <span class="en">Receive referral / job information from the Association?</span></legend>
+<div class="choices stack">
+  <label class="choice"><input type="radio" name="referral" value="願意"><span>願意接收及提供 <span class="en">Happy to receive and offer</span></span></label>
+  <label class="choice"><input type="radio" name="referral" value="僅接收"><span>僅接收，暫不需要提供 <span class="en">Receive only</span></span></label>
+  <label class="choice"><input type="radio" name="referral" value="不需要"><span>不需要 <span class="en">No</span></span></label>
+</div></fieldset>
+      <div class="field">
+        <label for="comments">其他建議或想說的話 <span class="en">Other suggestions or comments</span></label>
+        <textarea id="comments" name="comments" rows="3" maxlength="1000" placeholder="期待的活動、資源對接、校友會改進等 · Events you'd like, connections, improvements…"></textarea>
+      </div>
     </section>
 
-    <!-- ============ STEP 3 ============ -->
-    <section class="step" data-step="3" hidden>
+    <!-- ============ STEP 5 ============ -->
+    <section class="step" data-step="4" hidden>
       <h2>會籍類別 <span>Membership Type</span> <b class="req">*</b></h2>
       <fieldset class="field">
         <legend class="sr">會籍類別 Membership type</legend>
@@ -249,8 +325,8 @@
       </div>
     </section>
 
-    <!-- ============ STEP 4 ============ -->
-    <section class="step" data-step="4" hidden>
+    <!-- ============ STEP 5 ============ -->
+    <section class="step" data-step="5" hidden>
       <h2>個人資料收集聲明 <span>Personal Information Collection Statement</span></h2>
       <div class="pics" tabindex="0" aria-label="個人資料收集聲明 Personal Information Collection Statement">
         <p>暨南大學香港校友會有限公司（下稱「本會」）致力保障你的個人資料私隱。請細閱以下聲明，並於確認理解及同意後提交本表格。</p>

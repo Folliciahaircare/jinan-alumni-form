@@ -115,7 +115,7 @@
       var e = +$("#enrolYear").value, g = +$("#gradYear").value;
       if (e && g && g < e) { mark($("#gradYear"), "畢業年份不可早於入學年份 Must not precede enrolment"); bad.push($("#gradYear")); }
     }
-    if (n === 2) {
+    if (n === 3) {
       if (memberType() === "basic" && !$('input[name="payMethod"]:checked')) {
         mark($('input[name="payMethod"]'), "請選擇繳費方式 Select a payment method"); bad.push($('input[name="payMethod"]'));
       }
@@ -138,6 +138,16 @@
     if (e.key === "Enter" && e.target.tagName !== "TEXTAREA" && cur < steps.length - 1) { e.preventDefault(); btnNext.click(); }
   });
   form.addEventListener("input", function (e) { var f = e.target.closest(".invalid"); if (f) { f.classList.remove("invalid"); var m = f.querySelector(".msg"); if (m) m.remove(); } });
+
+  /* ---------- "other" reveal fields ---------- */
+  function otherToggle(selId, otherId, test, wrapId) {
+    var sel = $("#" + selId), o = $("#" + (wrapId || otherId));
+    function f() { o.hidden = !test(sel.value); }
+    sel.addEventListener("change", f); f();
+  }
+  otherToggle("college", "collegeOther", function (v) { return v === "其他"; });
+  otherToggle("industry", "industryOther", function (v) { return /^其他/.test(v); });
+  otherToggle("district", "districtOther", function (v) { return /^香港以外/.test(v); }, "districtOtherWrap");
 
   /* ---------- membership / payment toggles ---------- */
   function syncMembership() {
@@ -173,6 +183,9 @@
 
   /* ---------- data collection ---------- */
   function val(name) { var e = form.elements[name]; return e ? String(e.value || "").trim() : ""; }
+  function checked(name) { return $$('input[name="' + name + '"]:checked').map(function (e) { return e.value; }); }
+  function radioVal(name) { return (checked(name)[0]) || ""; }
+  function withOther(sel, other, test) { var v = val(sel), o = val(other); return test(v) && o ? v + "：" + o : v; }
   function collect(ref) {
     var chat = [];
     if ($('input[name="whatsapp"]').checked) chat.push("WhatsApp");
@@ -183,7 +196,11 @@
       dob: val("dob"), hkid: val("hkid").toUpperCase(), nationality: val("nationality"), ancestry: val("ancestry"),
       mobile: val("mobile"), chatApps: chat.join(" / "), email: val("email"), homeTel: val("homeTel"), fax: val("fax"),
       address: val("address"), corrAddress: val("corrAddress"),
-      enrolYear: val("enrolYear"), gradYear: val("gradYear"), college: val("college"), major: val("major"), eduLevel: val("eduLevel"),
+      enrolYear: val("enrolYear"), gradYear: val("gradYear"), college: withOther("college", "collegeOther", function (v) { return v === "其他"; }), major: val("major"), eduLevel: val("eduLevel"),
+      district: withOther("district", "districtOther", function (v) { return /^香港以外/.test(v); }),
+      workStatus: radioVal("workStatus"), industry: withOther("industry", "industryOther", function (v) { return /^其他/.test(v); }),
+      mentor: radioVal("mentor"), interests: checked("interests"), roles: checked("roles"), cluster: radioVal("cluster"),
+      referral: radioVal("referral"), comments: val("comments"),
       company: val("company"), position: val("position"), qualifications: val("qualifications"), publicService: val("publicService"),
       memberType: memberType() === "basic" ? "基本會員 Basic" : "學生會員 Student",
       fee: memberType() === "basic" ? C.FEE_BASIC : 0,
@@ -200,8 +217,10 @@
     var d = collect("—"), dl = $("#summary"), rows = [
       ["姓名 Name", d.cnName + " " + d.enName], ["性別 Gender", d.gender], ["出生日期 DOB", d.dob],
       ["電話 Mobile", d.mobile + (d.chatApps ? " (" + d.chatApps + ")" : "")], ["電郵 Email", d.email],
-      ["住宅地址 Address", d.address], ["入學／畢業 Years", d.enrolYear + " – " + (d.gradYear || "在學 current")],
+      ["住宅地址 Address", d.address], ["居住區域 District", d.district || "—"], ["入學／畢業 Years", d.enrolYear + " – " + (d.gradYear || "在學 current")],
       ["學院／專業 College / Major", d.college + " / " + d.major],
+      ["職業 Occupation", [d.workStatus, d.company, d.position].filter(Boolean).join(" · ") || "—"],
+      ["活動興趣 Interests", d.interests.length + " 項 selected"],
       ["會籍 Membership", d.memberType + (d.fee ? " (HK$" + d.fee + ")" : "")],
       ["繳費方式 Payment", d.payMethod || "—"]
     ];
