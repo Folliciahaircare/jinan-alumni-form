@@ -295,6 +295,18 @@
 </section>
 <!-- ============ STEP 5 ============ -->
 <section class="step" data-step="4" hidden="">
+<details class="notes" open>
+<summary><span class="zh">會籍申請說明</span><span class="en">Notes on membership application</span></summary>
+<ol>
+<li><span class="zh">有關會籍申請的章則及會員之權利義務，均已清楚列於本會網頁（<a href="https://www.jnuhkaa.org" target="_blank" rel="noopener">www.jnuhkaa.org</a>），請仔細閱讀。</span><span class="en">The rules on membership and members' rights and obligations are set out on the Association's website (<a href="https://www.jnuhkaa.org" target="_blank" rel="noopener">www.jnuhkaa.org</a>). Please read them carefully.</span></li>
+<li><span class="zh">會籍基本分為兩種：</span><span class="en">There are two basic types of membership:</span>
+<ul>
+<li><span class="zh"><b>基本會員：</b>凡曾經在暨南大學就讀、任教或任職的香港居民，認同本會宗旨，接受本會會章，及願意繳交本會訂立的入會費，均可申請加入為基本會員。</span><span class="en"><b>Basic member:</b> Hong Kong residents who have studied, taught or worked at Jinan University, who support the Association's aims, accept its constitution and are willing to pay the joining fee, may apply to be a basic member.</span></li>
+<li><span class="zh"><b>學生會員：</b>凡正在暨南大學就讀的香港學生，包括兼讀制，亦包括暨南大學在香港主辦或合辦課程，認同本會宗旨，接受本會會章，均可申請加入為學生會員。學生會員的會籍隨著該學生畢業或其他原因離校而終止。學生會員願意繳交本會訂立的入會費，可於任何時間申請轉為基本會員。</span><span class="en"><b>Student member:</b> Hong Kong students currently studying at Jinan University, including part-time students and those on programmes run or jointly run by Jinan University in Hong Kong, who support the Association's aims and accept its constitution, may apply to be a student member. Student membership ends when the student graduates or leaves the university for any other reason. A student member who is willing to pay the joining fee may apply to become a basic member at any time.</span></li>
+</ul></li>
+<li><span class="zh">入會費及交費辦法：基本會員須繳納入會費港幣 <b class="feeNum">100</b> 元正；學生會員無需繳付入會費。付款方式見下方。</span><span class="en">Joining fee and how to pay: basic members pay a joining fee of HK$<b class="feeNum">100</b>; student members pay no joining fee. Payment methods are shown below.</span></li>
+</ol>
+</details>
 <h2><span class="zh">會籍類別</span> <span class="en">Membership Type</span> <b class="req">*</b></h2>
 <fieldset class="field">
 <legend class="sr"><span class="zh">會籍類別</span> <span class="en">Membership type</span></legend>
@@ -341,18 +353,18 @@
 </div>
 <div class="paybox" data-pay="支票 Cheque" hidden="">
 <h3><span class="zh">支票</span> <span class="en">Cheque</span></h3>
-<p><span class="zh">請在支票背面寫上姓名及申請編號，郵寄或面交本會。</span><span class="en">Write your name and reference number on the back of the cheque; post or hand it in.</span></p>
+<p><span class="zh">請將上述抬頭的支票郵寄至本會，並在支票背頁註明申請人姓名。</span><span class="en">Post a cheque made payable as shown below to the Association, and write the applicant's name on the back of the cheque.</span></p>
 <dl id="payCheque"></dl>
 </div>
 <div class="paybox" data-pay="銀行轉賬 Bank transfer" hidden="">
 <h3><span class="zh">銀行轉賬</span> <span class="en">Bank transfer</span></h3>
-<p><span class="zh">請於備註填寫申請編號，並於下方上傳轉賬截圖／收據。</span><span class="en">Put your reference number in the remarks and upload the transfer slip below.</span></p>
+<p><span class="zh">請將會費存入下列戶口，並在入數紙註明申請人姓名，傳真至校友會並確認收妥。</span><span class="en">Deposit the fee into the account below, write the applicant's name on the pay-in slip, fax it to the Association and confirm that it has been received.</span></p>
 <dl id="payBank"></dl>
 </div>
 <div class="field" hidden="" id="payProofWrap">
-<label for="payFile"><span class="zh">付款證明（轉賬截圖／支票副本）</span><span class="en">Payment proof (transfer slip / cheque copy)</span></label>
+<label for="payFile"><span class="zh">付款證明（入數紙／支票副本）</span><span class="en">Payment proof (pay-in slip / cheque copy)</span></label>
 <input accept="image/*,application/pdf" data-key="pay" id="payFile" name="payFile" type="file"/>
-<p class="hint"><span class="zh">選填，可日後補交。</span><span class="en">Optional — can be sent later.</span></p>
+<p class="hint"><span class="zh">選填，可上傳副本作參考；以入數方式繳費者，入數紙仍須傳真至校友會。</span><span class="en">Optional copy for reference — if you pay by bank deposit, the pay-in slip must still be faxed to the Association.</span></p>
 <p class="filename" id="payFileName"></p>
 </div>
 </div>
@@ -409,6 +421,8 @@
 <span class="en">I have read and agree to the Association collecting, using and keeping my personal data for membership assessment, administration and necessary member services (section 3(1), (2), (6)), but I <b>do not agree</b> to direct marketing. I understand the Association will contact me only about membership matters and will use my answers on activity interests and participation only in statistical form that does not identify me.</span></span></label>
 </div>
 </fieldset>
+<label class="choice single"><input type="checkbox" name="constitution" value="yes" required="">
+<span><span class="zh">本人認同本會宗旨，並接受本會會章。</span><span class="en">I support the Association's aims and accept its constitution.</span></span></label>
 <label class="choice single"><input name="truth" required="" type="checkbox" value="yes"/>
 <span><span class="zh">本人謹此聲明，以上所填資料出於自願，全部屬實，如有更改將主動告知本會。</span>
 <span class="en">I declare that the information provided is voluntary and true, and I will notify the Association of any change.</span></span></label>
@@ -454,7 +468,7 @@
 </section>
 </main>
 <footer class="foot">
-<div class="wrap">© <span id="yr"></span> <span class="zh">暨南大學香港校友會</span> <span class="en">Jinan University Hong Kong Alumni Association</span></div>
+<div class="wrap">© <span id="yr"></span> <span class="zh" id="footZh">暨南大學香港校友會</span> <span class="en" id="footEn">Jinan University Hong Kong Alumni Association</span></div>
 </footer>
 <script src="js/config.js"></script>
 <script src="js/vendor/opencc-t2cn.js"></script>

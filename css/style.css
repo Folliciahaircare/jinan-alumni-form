@@ -138,3 +138,7 @@ input[type=file]{padding:9px;font-size:15px}
 .langsw button{padding:6px 11px}
 
 select{height:52px}
+.notes{background:var(--pri-l);border-left:4px solid var(--acc);border-radius:8px;padding:10px 14px;margin:0 0 16px;font-size:15px}
+.notes summary{cursor:pointer;font-weight:700;color:var(--pri)}
+.notes ol{margin:8px 0 0;padding-left:20px}.notes li{margin:6px 0}.notes ul{margin:6px 0;padding-left:18px}
+.notes a{color:var(--pri)}

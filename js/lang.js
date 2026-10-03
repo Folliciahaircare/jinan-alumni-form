@@ -8,7 +8,17 @@
   var conv = OC ? OC.Converter({ from: "hk", to: "cn" }) : null;
   var CJK = /[㐀-鿿]/, ATTRS = ["placeholder", "aria-label", "title"];
   var mode = "hant", conversion = "hant", orig = new WeakMap(), busy = false;
-  var TITLES = { zh: "會員申請表 · 暨南大學香港校友會", en: "Membership Application · Jinan University Hong Kong Alumni Association" };
+  function org() {   // association name from config.js (string or {hant,hans,en})
+    var o = (window.JNU_CONFIG || {}).ORG;
+    if (!o || typeof o !== "object") return { hant: "暨南大學香港校友會", hans: "", en: "Jinan University Hong Kong Alumni Association" };
+    return { hant: o.hant || o.hans || o.en || "", hans: o.hans || "", en: o.en || o.hant || o.hans || "" };
+  }
+  function pageTitle() {
+    var o = org();
+    if (mode === "en") return "Membership Application · " + o.en;
+    if (mode === "hans") return conv("會員申請表 · ") + (o.hans || conv(o.hant));
+    return "會員申請表 · " + o.hant;
+  }
 
   function stored() { try { return localStorage.getItem("jnu_lang"); } catch (e) { return null; } }
   function save(l) { try { localStorage.setItem("jnu_lang", l); } catch (e) {} }
@@ -23,7 +33,8 @@
     if (conversion === "hans") {
       if (r && v === r.c) return;
       if (!CJK.test(v)) return;
-      var c = conv(v); orig.set(n, { o: v, c: c });
+      var p = n.parentNode, forced = p && p.getAttribute && p.getAttribute("data-hans");
+      var c = forced ? forced : conv(v); orig.set(n, { o: v, c: c });   // data-hans = a Simplified value supplied in config.js
       if (c !== v) n.nodeValue = c;
     } else if (r) {
       if (v === r.c) n.nodeValue = r.o;
@@ -67,8 +78,7 @@
     }
     Array.prototype.forEach.call(root.querySelectorAll("option[data-zh]"), fixOption);
     Array.prototype.forEach.call(root.querySelectorAll("[data-ph-zh]"), fixPh);
-    var tt = mode === "en" ? TITLES.en : TITLES.zh;
-    if (root === document && document.title !== tt && !(conversion === "hans" && document.title === conv(tt))) document.title = tt;
+    if (root === document) { var tt = pageTitle(); if (document.title !== tt) document.title = tt; }
   }
 
   var mo = new MutationObserver(function (list) {

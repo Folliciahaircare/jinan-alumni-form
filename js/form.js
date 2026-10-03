@@ -14,17 +14,33 @@
   /* ---------- language helpers ---------- */
   // bi(): trusted constant strings only (never user data). Both languages are emitted; CSS shows the active one.
   function bi(zh, en) { return '<span class="zh">' + zh + '</span><span class="en">' + en + '</span>'; }
-  function setBi(el, zh, en) {   // safe for any text, including config / user values
+  function setBi(el, zh, en, hans) {   // safe for any text, including config / user values
     el.textContent = "";
     var a = document.createElement("span"), b = document.createElement("span");
+    if (hans) a.setAttribute("data-hans", hans);
     a.className = "zh"; a.textContent = zh; b.className = "en"; b.textContent = en;
     el.appendChild(a); el.appendChild(b);
   }
   function lang() { return window.JNU_LANG ? JNU_LANG.get() : "hant"; }
 
+  /* config text values: "plain" or { hant, hans, en } → { zh (Traditional), hans (Simplified or ""), en } */
+  var toHans = window.OpenCC ? OpenCC.Converter({ from: "hk", to: "cn" }) : function (x) { return x; };
+  function tr(v) {
+    if (v == null) return { zh: "", hans: "", en: "" };
+    if (typeof v !== "object") { v = String(v); return { zh: v, hans: "", en: v }; }
+    var zh = v.hant || v.hans || v.en || "";
+    return { zh: zh, hans: v.hans || "", en: v.en || v.hant || v.hans || "" };
+  }
+  function isEmpty(t) { return !(t.zh || t.hans || t.en); }
+  function setZhText(el, t) {   // single element that carries the Chinese text (Simplified override via data-hans)
+    if (t.hans) el.setAttribute("data-hans", t.hans); else el.removeAttribute("data-hans");
+    el.textContent = t.zh;
+  }
+
   /* ---------- config → page ---------- */
-  $("#orgZh").textContent = C.ORG_ZH || "";
-  $("#orgEn").textContent = C.ORG_EN || "";
+  var ORG = tr(C.ORG || { hant: C.ORG_ZH, en: C.ORG_EN });
+  setZhText($("#orgZh"), ORG); $("#orgEn").textContent = ORG.en;
+  setZhText($("#footZh"), ORG); $("#footEn").textContent = ORG.en;
   if (C.LOGO) $("#logo").src = C.LOGO;
   $("#yr").textContent = new Date().getFullYear();
   $$(".mb").forEach(function (e) { e.textContent = C.MAX_FILE_MB; });
@@ -33,34 +49,40 @@
   if (!C.ENDPOINT) $("#demoBanner").hidden = false;
   if (C.CONTACT && C.CONTACT.website) $("#homeLink").href = "https://" + C.CONTACT.website.replace(/^https?:\/\//, "");
 
-  function contactLines() {
-    var c = C.CONTACT || {}, z = [], e = [];
-    if (c.address) { z.push("地址：" + c.address); e.push("Address: " + c.address); }
-    if (c.phone) { z.push("電話：" + c.phone); e.push("Tel: " + c.phone); }
-    if (c.whatsapp) { z.push("WhatsApp：" + c.whatsapp); e.push("WhatsApp: " + c.whatsapp); }
-    if (c.email) { z.push("電郵：" + c.email); e.push("Email: " + c.email); }
-    return { any: z.length > 0, zh: z.join("　|　"), en: e.join("  |  ") };
+  function contactLines() {   // each item: Traditional label+value, Simplified (own value or converted), English
+    var c = C.CONTACT || {}, z = [], h = [], e = [];
+    function add(zhLabel, enLabel, t) {
+      if (isEmpty(t)) return;
+      z.push(zhLabel + "：" + t.zh); h.push(toHans(zhLabel) + "：" + (t.hans || toHans(t.zh))); e.push(enLabel + ": " + t.en);
+    }
+    add("地址", "Address", tr(c.address)); add("電話", "Tel", tr(c.phone)); add("傳真", "Fax", tr(c.fax));
+    add("WhatsApp", "WhatsApp", tr(c.whatsapp)); add("電郵", "Email", tr(c.email));
+    return { any: z.length > 0, zh: z.join("　|　"), hans: h.join("　|　"), en: e.join("  |  ") };
   }
   var cl = contactLines();
   var site = (C.CONTACT && C.CONTACT.website) || "";
   var cZh = cl.any ? cl.zh : (site ? "網站：" + site : ""), cEn = cl.any ? cl.en : (site ? "Website: " + site : "");
+  var cHans = cl.any ? cl.hans : (site ? "网站：" + site : "");
   $("#picsContact").textContent = cEn ? "Contact the Association: " + cEn : "";
-  $("#picsContactZh").textContent = cZh ? "聯絡本會：" + cZh : "";
-  if (cl.any) setBi($("#doneContact"), "如有查詢，請聯絡我們：" + cl.zh, "For enquiries: " + cl.en); else $("#doneContact").textContent = "";
+  setZhText($("#picsContactZh"), { zh: cZh ? "聯絡本會：" + cZh : "", hans: cHans ? "联络本会：" + cHans : "" });
+  if (cl.any) setBi($("#doneContact"), "如有查詢，請聯絡我們：" + cl.zh, "For enquiries: " + cl.en, "如有查询，请联络我们：" + cl.hans); else $("#doneContact").textContent = "";
 
   function fillDl(id, rows) {
     var dl = $(id); dl.innerHTML = "";
     rows.forEach(function (r) {
       var dt = document.createElement("dt"), dd = document.createElement("dd");
       setBi(dt, r[0][0], r[0][1]);
-      if (r[1]) dd.textContent = r[1]; else { dd.innerHTML = bi("待公佈", "To be confirmed"); dd.className = "tbc"; }
+      var t = tr(r[1]);
+      if (isEmpty(t)) { dd.innerHTML = bi("待公佈", "To be confirmed"); dd.className = "tbc"; }
+      else if (typeof r[1] === "object") setBi(dd, t.zh, t.en, t.hans);
+      else dd.textContent = t.zh;
       dl.appendChild(dt); dl.appendChild(dd);
     });
   }
   var P = C.PAYMENT || {};
   fillDl("#payInPerson", [[["地址", "Address"], P.officeAddress], [["辦公時間", "Hours"], P.officeHours]]);
   fillDl("#payCheque", [[["抬頭", "Payable to"], P.chequePayableTo], [["郵寄地址", "Mail to"], P.officeAddress]]);
-  fillDl("#payBank", [[["戶名", "Payee"], P.payee], [["銀行", "Bank"], P.bank], [["帳號", "Account"], P.account], [["轉數快", "FPS"], P.fps]]);
+  fillDl("#payBank", [[["存入戶口名稱", "Account name"], P.payee], [["銀行", "Bank"], P.bank], [["帳號", "Account no."], P.account], [["傳真入數紙至", "Fax the pay-in slip to"], C.CONTACT && C.CONTACT.fax], [["轉數快", "FPS"], P.fps]]);
 
   /* ---------- phone region pickers ---------- */
   var PH = window.JNU_PHONE;
@@ -420,11 +442,13 @@
   function finish(d) {
     $("#refNo").textContent = d.ref;
     var box = $("#doneNext"), basic = memberType() === "basic", pm = d.payMethod, f = C.FEE_BASIC, html = "";
+    var fx = (C.CONTACT && C.CONTACT.fax) ? String(C.CONTACT.fax).replace(/[&<>"']/g, "") : "";
+    var faxZh = fx ? "（傳真：" + fx + "）" : "", faxEn = fx ? " (fax: " + fx + ")" : "";
     function nx(zh, en) { return "<p><b>" + bi("下一步：", "Next:") + "</b> " + bi(zh, en) + "</p>"; }
     if (!basic) html = nx("本會審核你的學生身份後會以電郵通知。", "we will verify your student status and notify you by email.");
     else if (pm.indexOf("In person") > -1) html = nx("請親臨本會繳交會費 HK$" + f + " 並出示申請編號。", "pay HK$" + f + " in cash at the office, quoting your reference number.");
-    else if (pm.indexOf("Cheque") > -1) html = nx("請將 HK$" + f + " 支票（背面註明申請編號）交予本會。", "send a HK$" + f + " cheque with your reference number on the back.");
-    else html = nx("請轉賬 HK$" + f + "，備註填寫申請編號" + (d.payFile ? "。" : "，並將轉賬截圖發送本會。"), "transfer HK$" + f + " with your reference number in the remarks" + (d.payFile ? "." : " and send us the slip."));
+    else if (pm.indexOf("Cheque") > -1) html = nx("請將 HK$" + f + " 支票郵寄至本會，支票背頁註明申請人姓名。", "post a HK$" + f + " cheque to the Association, with the applicant's name written on the back.");
+    else html = nx("請存入 HK$" + f + "，入數紙註明申請人姓名，傳真至校友會" + faxZh + "並確認收妥。", "deposit HK$" + f + ", write the applicant's name on the pay-in slip, fax it to the Association" + faxEn + " and confirm receipt.");
     box.innerHTML = html;
     form.hidden = true; $("#steps").hidden = true; $("#demoBanner").hidden = true;
     $("#done").hidden = false;
