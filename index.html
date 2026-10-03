@@ -132,6 +132,10 @@
 <p class="hint"><span class="zh">在學請留空</span> <span class="en">Leave blank if still studying</span></p>
 </div>
 <div class="field">
+<label for="campus"><span class="zh">校區</span> <span class="en">Campus</span></label>
+<select id="campus" name="campus"><option value="" data-zh="— 請選擇 —" data-en="— Please select —">— 請選擇 —</option><option value="石牌校區（廣州校本部）" data-zh="石牌校區（廣州校本部）" data-en="Shipai campus (Guangzhou main campus)">石牌校區（廣州校本部）</option><option value="番禺校區" data-zh="番禺校區" data-en="Panyu campus">番禺校區</option><option value="珠海校區" data-zh="珠海校區" data-en="Zhuhai campus">珠海校區</option><option value="深圳校區" data-zh="深圳校區" data-en="Shenzhen campus">深圳校區</option><option value="廣園東（華文學院）" data-zh="廣園東（華文學院）" data-en="Guangyuandong (College of Chinese Language & Culture)">廣園東（華文學院）</option><option value="其他" data-zh="其他" data-en="Other">其他</option></select>
+</div>
+<div class="field">
 <label for="college"><span class="zh">所屬學院</span> <span class="en">College / School</span> <b class="req">*</b></label>
 <select id="college" name="college" required=""><option data-en="— Please select —" data-zh="— 請選擇 —" value="">— 請選擇 —</option>
 <option data-en="School of Humanities (Chinese Literature &amp; History)" data-zh="文學院" value="文學院">文學院</option>
@@ -169,6 +173,10 @@
 <option data-en="Other (please specify)" data-zh="其他（請註明）" value="其他">其他（請註明）</option>
 </select>
 <input data-ph-en="If Other, specify" data-ph-zh="如選「其他」請註明" hidden="" id="collegeOther" name="collegeOther" placeholder="如選「其他」請註明" style="margin-top:8px"/>
+</div>
+<div class="field">
+<label for="major"><span class="zh">專業</span> <span class="en">Major</span> <b class="req">*</b></label>
+<input id="major" name="major" required autocomplete="off"/>
 </div>
 
 <div class="field">

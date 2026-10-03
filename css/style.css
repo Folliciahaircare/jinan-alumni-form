@@ -136,3 +136,5 @@ input[type=file]{padding:9px;font-size:15px}
 .btn.add{flex:none;min-height:42px;font-size:15px}
 .steps li small{display:block;font-size:11px}
 .langsw button{padding:6px 11px}
+
+select{height:52px}
