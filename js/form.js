@@ -1,6 +1,7 @@
 (function () {
   "use strict";
   var C = window.JNU_CONFIG || {};
+  var PICS_VERSION = "2026-10-03";   // bump whenever the statement or consent wording changes; stored with each consent
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
@@ -30,7 +31,10 @@
     return b.join("　|　");
   }
   var cl = contactLine();
-  $("#picsContact").textContent = cl ? "聯絡本會 Contact: " + cl : "";
+  var site = (C.CONTACT && C.CONTACT.website) || "";
+  var cline = cl || (site ? "網站 Website: " + site : "");
+  $("#picsContact").textContent = cline ? "Contact the Association: " + cline : "";
+  $("#picsContactZh").textContent = cline ? "聯絡本會：" + cline : "";
   $("#doneContact").textContent = cl ? "如有查詢，請聯絡我們 For enquiries: " + cl : "";
 
   function fillDl(id, rows) {
@@ -205,7 +209,7 @@
       memberType: memberType() === "basic" ? "基本會員 Basic" : "學生會員 Student",
       fee: memberType() === "basic" ? C.FEE_BASIC : 0,
       payMethod: memberType() === "basic" ? (($('input[name="payMethod"]:checked') || {}).value || "") : "",
-      consent: ($('input[name="consent"]:checked') || {}).value || "",
+      consent: (($('input[name="consent"]:checked') || {}).value || "") + " [PICS " + PICS_VERSION + "]",
       signName: val("signName"), signDate: val("signDate"),
       userAgent: navigator.userAgent, website: val("website"), elapsedMs: Date.now() - openedAt,
       docFile: files.doc, payFile: $("#payProofWrap").hidden ? null : files.pay
