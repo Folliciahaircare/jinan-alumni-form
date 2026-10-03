@@ -106,12 +106,12 @@
 
   /* ---------- year selects / dates ---------- */
   var thisYear = new Date().getFullYear();
-  function yearOptions(sel, from, to) {
-    var h = '<option value="" data-zh="— 年份 —" data-en="— Year —">— 年份 —</option>';
+  function yearOptions(sel, from, to, extra) {
+    var h = '<option value="" data-zh="— 年份 —" data-en="— Year —">— 年份 —</option>' + (extra || "");
     for (var y = to; y >= from; y--) h += "<option>" + y + "</option>";
     sel.innerHTML = h;
   }
-  yearOptions($("#gradYear"), 1906, thisYear + 8);   // Jinan founded 1906
+  yearOptions($("#gradYear"), 1906, thisYear + 8, '<option value="在學" data-zh="在學" data-en="Still studying">在學</option>');   // Jinan founded 1906
   yearOptions($("#pe1Year"), 1950, thisYear + 8);
   yearOptions($("#pe2Year"), 1950, thisYear + 8);
   // public service: extra input rows
@@ -185,7 +185,6 @@
         var pr = PH.check($("#" + el.name + "Cc").value, v, el.name === "mobile" ? "mobile" : "any");
         if (!pr.ok) { mark(el, bi("電話號碼與所選地區不符，請檢查（" + pr.region.hint.zh + "）", "Number doesn't match the selected region (" + pr.region.hint.en + ")")); bad.push(el); }
       }
-      if (v && el.name === "hkid" && !/^[A-Za-z]{1,2}\d{6}\(?[0-9Aa]\)?$/.test(v.replace(/\s/g, ""))) { mark(el, bi("格式例：A123456(7)", "Format: A123456(7)")); bad.push(el); }
     });
     if (n === 1) {   // prior education: once an entry is started, every missing part is highlighted red
       [1, 2].forEach(function (i) {
@@ -354,11 +353,14 @@
     var chat = [];
     if ($('input[name="whatsapp"]').checked) chat.push("WhatsApp");
     if ($('input[name="wechat"]').checked) chat.push("WeChat");
+    var chat2 = [];
+    if ($('input[name="whatsapp2"]').checked) chat2.push("WhatsApp");
+    if ($('input[name="wechat2"]').checked) chat2.push("WeChat");
     var d = {
       ref: ref, submittedAt: new Date().toISOString(),
       cnName: val("cnName"), enName: val("enName"), gender: ($('input[name="gender"]:checked') || {}).value || "",
-      dob: val("dob"), hkid: val("hkid").toUpperCase(), nationality: val("nationality"), ancestry: val("ancestry"),
-      mobile: phoneFull("mobile", "mobile"), chatApps: chat.join(" / "), email: val("email"), homeTel: phoneFull("homeTel", "any"),
+      dob: val("dob"),
+      mobile: phoneFull("mobile", "mobile"), chatApps: chat.join(" / "), email: val("email"), homeTel: phoneFull("homeTel", "any"), homeChatApps: chat2.join(" / "),
       address: val("address"),
       gradYear: val("gradYear"), college: withOther("college", "collegeOther", function (v) { return v === "其他"; }), major: val("major"), campus: val("campus"), eduLevel: val("eduLevel"),
       priorEducation: priorEducation(),
@@ -401,10 +403,10 @@
     var ws = $('input[name="workStatus"]:checked');
     var rows = [
       ["姓名", "Name", d.cnName + " " + d.enName], ["性別", "Gender", pair(d.gender)], ["出生日期", "Date of birth", d.dob],
-      ["手提電話", "Mobile", d.mobile + (d.chatApps ? " (" + d.chatApps + ")" : "")], ["其他電話", "Second phone", d.homeTel || "—"], ["電郵", "Email", d.email],
+      ["手提電話", "Mobile", d.mobile + (d.chatApps ? " (" + d.chatApps + ")" : "")], ["其他電話", "Second phone", d.homeTel ? d.homeTel + (d.homeChatApps ? " (" + d.homeChatApps + ")" : "") : "—"], ["電郵", "Email", d.email],
       ["居住區域", "District", selPair("district", "districtOther", function (v) { return /^香港以外/.test(v); })],
       ["聯絡地址", "Contact address", d.address || "—"],
-      ["畢業年份", "Graduation", d.gradYear || { zh: "在學", en: "Still studying" }],
+      ["畢業年份", "Graduation", d.gradYear === "在學" ? { zh: "在學", en: "Still studying" } : (d.gradYear || "—")],
       ["校區", "Campus", selPair("campus", "", function () { return false; })],
       ["學院", "College", selPair("college", "collegeOther", function (v) { return v === "其他"; })],
       ["專業", "Major", d.major || "—"],

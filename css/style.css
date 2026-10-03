@@ -164,3 +164,17 @@ select{height:52px}
 
 .qr{display:block;width:200px;max-width:100%;height:auto;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff;margin:8px 0}
 .addrow{margin:8px 0 0}
+
+/* gender / WhatsApp-WeChat choices: plain radios & checkboxes, no boxed pills */
+.choices.inline{gap:8px 26px}
+.choices.inline .choice{border:0;border-radius:0;padding:6px 0;background:none}
+.choices.inline .choice:has(input:checked){border:0;background:none}
+/* public service: rows stretch the full width */
+#psField{grid-column:1/-1}
+#psField input{width:100%}
+/* Community & interests: breathing room between questions */
+.q{margin-bottom:30px;padding-bottom:26px;border-bottom:1px dashed var(--line)}
+.q:last-child{border-bottom:0;margin-bottom:6px;padding-bottom:0}
+.q .choices.stack{gap:6px}
+
+h2 + p.lead{margin-bottom:20px}

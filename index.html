@@ -52,7 +52,7 @@
 </div>
 <div class="field">
 <label for="enName"><span class="zh">英文姓名</span> <span class="en">English Name</span> <b class="req">*</b></label>
-<input autocomplete="name" id="enName" name="enName" placeholder="CHAN Tai Man" required=""/>
+<input autocomplete="name" id="enName" name="enName" required=""/>
 </div>
 </div>
 <fieldset class="field">
@@ -67,12 +67,6 @@
 <label for="dob"><span class="zh">出生日期</span> <span class="en">Date of Birth</span> <b class="req">*</b></label>
 <input autocomplete="bday" id="dob" max="" name="dob" required="" type="date"/>
 </div>
-<div class="field">
-<label for="hkid"><span class="zh">香港身份證號碼</span> <span class="en">HKID No.</span></label>
-<input autocomplete="off" id="hkid" maxlength="12" name="hkid" placeholder="A123456(7)"/>
-<p class="hint"><span class="zh">選填；只在需要核實身份時使用。</span><span class="en">Optional; used only if identity verification is needed.</span></p>
-</div>
-
 
 </div>
 </section>
@@ -98,6 +92,13 @@
 <div class="phone"><select aria-label="區號 Country / region code" class="cc" id="homeTelCc" name="homeTelCc"></select>
 <input autocomplete="off" id="homeTel" inputmode="tel" name="homeTel" type="tel"/></div>
 </div>
+<fieldset class="field">
+<legend><span class="zh">此號碼可用 WhatsApp / WeChat？</span> <span class="en">Reachable on WhatsApp / WeChat?</span></legend>
+<div class="choices inline">
+<label class="choice"><input name="whatsapp2" type="checkbox" value="WhatsApp"/><span>WhatsApp</span></label>
+<label class="choice"><input name="wechat2" type="checkbox" value="WeChat"/><span>WeChat</span></label>
+</div>
+</fieldset>
 <div class="field">
 <label for="email"><span class="zh">電子郵件</span> <span class="en">E-mail</span> <b class="req">*</b></label>
 <input autocomplete="email" id="email" inputmode="email" name="email" required="" type="email"/>
@@ -120,13 +121,13 @@
 <h2><span class="zh">暨南大學學歷</span> <span class="en">Study at Jinan University</span></h2>
 <div class="grid">
 <div class="field">
-<label for="gradYear"><span class="zh">畢業年份</span> <span class="en">Year of Graduation</span></label>
-<select id="gradYear" name="gradYear"></select>
-<p class="hint"><span class="zh">在學請留空</span> <span class="en">Leave blank if still studying</span></p>
+<label for="gradYear"><span class="zh">畢業年份</span> <span class="en">Year of Graduation</span> <b class="req">*</b></label>
+<select id="gradYear" name="gradYear" required=""></select>
+
 </div>
 <div class="field">
-<label for="campus"><span class="zh">校區</span> <span class="en">Campus</span></label>
-<select id="campus" name="campus"><option data-en="— Please select —" data-zh="— 請選擇 —" value="">— 請選擇 —</option><option data-en="Shipai campus (Guangzhou main campus)" data-zh="石牌校區（廣州校本部）" value="石牌校區（廣州校本部）">石牌校區（廣州校本部）</option><option data-en="Panyu campus" data-zh="番禺校區" value="番禺校區">番禺校區</option><option data-en="Zhuhai campus" data-zh="珠海校區" value="珠海校區">珠海校區</option><option data-en="Shenzhen campus" data-zh="深圳校區" value="深圳校區">深圳校區</option><option data-en="Guangyuandong (College of Chinese Language &amp; Culture)" data-zh="廣園東（華文學院）" value="廣園東（華文學院）">廣園東（華文學院）</option><option data-en="Other" data-zh="其他" value="其他">其他</option></select>
+<label for="campus"><span class="zh">校區</span> <span class="en">Campus</span> <b class="req">*</b></label>
+<select id="campus" name="campus" required=""><option data-en="— Please select —" data-zh="— 請選擇 —" value="">— 請選擇 —</option><option data-en="Shipai campus (Guangzhou main campus)" data-zh="石牌校區（廣州校本部）" value="石牌校區（廣州校本部）">石牌校區（廣州校本部）</option><option data-en="Panyu campus" data-zh="番禺校區" value="番禺校區">番禺校區</option><option data-en="Zhuhai campus" data-zh="珠海校區" value="珠海校區">珠海校區</option><option data-en="Shenzhen campus" data-zh="深圳校區" value="深圳校區">深圳校區</option><option data-en="Guangyuandong (College of Chinese Language &amp; Culture)" data-zh="廣園東（華文學院）" value="廣園東（華文學院）">廣園東（華文學院）</option><option data-en="Other" data-zh="其他" value="其他">其他</option></select>
 </div>
 <div class="field">
 <label for="college"><span class="zh">所屬學院</span> <span class="en">College / School</span> <b class="req">*</b></label>
@@ -172,8 +173,8 @@
 <input autocomplete="off" id="major" name="major" required=""/>
 </div>
 <div class="field">
-<label for="eduLevel"><span class="zh">學歷</span> <span class="en">Educational Level</span></label>
-<select id="eduLevel" name="eduLevel"><option data-en="— Please select —" data-zh="— 請選擇 —" value="">— 請選擇 —</option><option data-en="Bachelor" data-zh="本科" value="本科 Bachelor">本科</option><option data-en="Master" data-zh="碩士研究生" value="碩士研究生 Master">碩士研究生</option><option data-en="Doctorate" data-zh="博士研究生" value="博士研究生 Doctorate">博士研究生</option><option data-en="Associate / Higher Diploma" data-zh="副學士／高級文憑" value="副學士／高級文憑 Associate / Higher Diploma">副學士／高級文憑</option><option data-en="Staff / Faculty" data-zh="教職員" value="教職員 Staff / Faculty">教職員</option><option data-en="Other" data-zh="其他" value="其他 Other">其他</option></select>
+<label for="eduLevel"><span class="zh">學歷</span> <span class="en">Educational Level</span> <b class="req">*</b></label>
+<select id="eduLevel" name="eduLevel" required=""><option data-en="— Please select —" data-zh="— 請選擇 —" value="">— 請選擇 —</option><option data-en="Bachelor" data-zh="本科" value="本科 Bachelor">本科</option><option data-en="Master" data-zh="碩士研究生" value="碩士研究生 Master">碩士研究生</option><option data-en="Doctorate" data-zh="博士研究生" value="博士研究生 Doctorate">博士研究生</option><option data-en="Associate / Higher Diploma" data-zh="副學士／高級文憑" value="副學士／高級文憑 Associate / Higher Diploma">副學士／高級文憑</option><option data-en="Staff / Faculty" data-zh="教職員" value="教職員 Staff / Faculty">教職員</option><option data-en="Other" data-zh="其他" value="其他 Other">其他</option></select>
 </div>
 </div>
 <h2><span class="zh">其他學歷</span> <span class="en">Other / prior education</span> <span class="zh opt">（選填）</span><span class="en opt">(optional)</span></h2>
@@ -228,22 +229,20 @@
 <label for="qualifications"><span class="zh">專業資格</span> <span class="en">Professional Qualifications</span></label>
 <input id="qualifications" name="qualifications"/>
 </div>
-<div class="field">
+<div class="field" id="psField">
 <label for="publicService"><span class="zh">社會公職</span> <span class="en">Public Service</span></label>
-<div id="psRows"><input id="publicService" name="publicService" autocomplete="off"/></div>
-<p class="addrow"><button type="button" class="btn ghost add" id="psAdd"><span class="zh">＋ 新增一項</span><span class="en">+ Add another</span></button></p>
+<div id="psRows"><input autocomplete="off" id="publicService" name="publicService"/></div>
+<p class="addrow"><button class="btn ghost add" id="psAdd" type="button"><span class="zh">＋ 新增一項</span><span class="en">+ Add another</span></button></p>
 </div>
 </div>
 <h2><span class="zh">校友活動及參與</span> <span class="en">Community &amp; interests (optional)</span></h2>
-<p class="lead small"><span class="zh">幫助我們策劃活動，全部選填，並按個人資料收集聲明第三(4)(5)項使用。</span><span class="en">Helps us plan activities — all optional, used as described in sections 3(4)–(5) of the statement.</span></p>
-<fieldset class="field"><legend><span class="zh">是否願意擔任「職場導師」，為年輕校友分享經驗？</span> <span class="en">Willing to be a career mentor for younger alumni?</span></legend>
+<p class="lead"><span class="zh">幫助我們策劃活動，全部選填，並按個人資料收集聲明第三(4)(5)項使用。</span><span class="en">Helps us plan activities — all optional, used as described in sections 3(4)–(5) of the statement.</span></p>
+<fieldset class="field q"><legend><span class="zh">是否願意擔任「職場導師」，為年輕校友分享經驗？</span> <span class="en">Willing to be a career mentor for younger alumni?</span></legend>
 <div class="choices stack">
 <label class="choice"><input name="mentor" type="radio" value="願意，歡迎聯絡我"/><span><span class="zh">願意，歡迎聯絡我</span> <span class="en">Yes, please contact me</span></span></label>
-
-
 <label class="choice"><input name="mentor" type="radio" value="暫不參與"/><span><span class="zh">暫不參與</span> <span class="en">Not participating</span></span></label>
 </div></fieldset>
-<fieldset class="field"><legend><span class="zh">感興趣的校友活動（可多選）</span> <span class="en">Activities you are interested in (multiple)</span></legend>
+<fieldset class="field q"><legend><span class="zh">感興趣的校友活動（可多選）</span> <span class="en">Activities you are interested in (multiple)</span></legend>
 <div class="choices stack two">
 <label class="choice"><input name="interests" type="checkbox" value="行業分享／晚宴"/><span><span class="zh">行業分享／晚宴（金融／法律／專業服務等）</span> <span class="en">Industry talks / dinners</span></span></label>
 <label class="choice"><input name="interests" type="checkbox" value="職場導師計劃"/><span><span class="zh">職場導師計劃</span> <span class="en">Mentoring programme</span></span></label>
@@ -258,7 +257,7 @@
 <label class="choice"><input name="interests" type="checkbox" value="公益／義工服務"/><span><span class="zh">公益／義工服務</span> <span class="en">Charity / volunteering</span></span></label>
 <label class="choice"><input name="interests" type="checkbox" value="都不太感興趣"/><span><span class="zh">都不太感興趣</span> <span class="en">None of these</span></span></label>
 </div></fieldset>
-<fieldset class="field"><legend><span class="zh">希望在校友會擔任的角色（可多選）</span> <span class="en">Roles you would like to take (multiple)</span></legend>
+<fieldset class="field q"><legend><span class="zh">希望在校友會擔任的角色（可多選）</span> <span class="en">Roles you would like to take (multiple)</span></legend>
 <div class="choices stack two">
 <label class="choice"><input name="roles" type="checkbox" value="地區聯絡人"/><span><span class="zh">地區聯絡人（港島／九龍／新界負責人）</span> <span class="en">District coordinator (HK Island / Kowloon / NT)</span></span></label>
 <label class="choice"><input name="roles" type="checkbox" value="學院聯絡人"/><span><span class="zh">學院聯絡人</span> <span class="en">College / school liaison</span></span></label>
@@ -266,7 +265,7 @@
 <label class="choice"><input name="roles" type="checkbox" value="分享嘉賓"/><span><span class="zh">分享嘉賓</span> <span class="en">Guest speaker</span></span></label>
 <label class="choice"><input name="roles" type="checkbox" value="普通會員即可"/><span><span class="zh">普通會員即可</span> <span class="en">Regular member only</span></span></label>
 </div></fieldset>
-<fieldset class="field"><legend><span class="zh">偏好的地區社群</span> <span class="en">Preferred district group</span></legend>
+<fieldset class="field q"><legend><span class="zh">偏好的地區社群</span> <span class="en">Preferred district group</span></legend>
 <div class="choices stack">
 <label class="choice"><input name="cluster" type="radio" value="港島"/><span><span class="zh">港島（中西／灣仔／東／南）</span> <span class="en">Hong Kong Island</span></span></label>
 <label class="choice"><input name="cluster" type="radio" value="九龍"/><span><span class="zh">九龍（油尖旺／深水埗／九龍城／黃大仙／觀塘）</span> <span class="en">Kowloon</span></span></label>
@@ -274,13 +273,13 @@
 <label class="choice"><input name="cluster" type="radio" value="新界西"/><span><span class="zh">新界西（荃灣／屯門／元朗／葵青／離島）</span> <span class="en">New Territories West</span></span></label>
 <label class="choice"><input name="cluster" type="radio" value="暫不確定"/><span><span class="zh">暫不確定</span> <span class="en">Not sure</span></span></label>
 </div></fieldset>
-<fieldset class="field"><legend><span class="zh">是否願意接收校友會的「內推／招聘資訊」？</span> <span class="en">Receive referral / job information from the Association?</span></legend>
+<fieldset class="field q"><legend><span class="zh">是否願意接收校友會的「內推／招聘資訊」？</span> <span class="en">Receive referral / job information from the Association?</span></legend>
 <div class="choices stack">
 <label class="choice"><input name="referral" type="radio" value="願意"/><span><span class="zh">願意接收及提供</span> <span class="en">Happy to receive and offer</span></span></label>
 <label class="choice"><input name="referral" type="radio" value="僅接收"/><span><span class="zh">僅接收，暫不需要提供</span> <span class="en">Receive only</span></span></label>
 <label class="choice"><input name="referral" type="radio" value="不需要"/><span><span class="zh">不需要</span> <span class="en">No</span></span></label>
 </div></fieldset>
-<div class="field">
+<div class="field q">
 <label for="comments"><span class="zh">其他建議或想說的話</span> <span class="en">Other suggestions or comments</span></label>
 <textarea data-ph-en="Events you'd like, connections, improvements…" data-ph-zh="期待的活動、資源對接、校友會改進等" id="comments" maxlength="1000" name="comments" placeholder="期待的活動、資源對接、校友會改進等" rows="3"></textarea>
 </div>
@@ -339,13 +338,13 @@
 <div class="paybox" data-pay="轉數快 FPS" hidden="">
 <h3><span class="zh">轉數快 FPS</span> <span class="en">FPS</span></h3>
 <p><span class="zh">請用銀行 App 掃描下方二維碼轉賬，付款備註填寫申請人姓名，並於下方上傳付款截圖。</span><span class="en">Scan the QR code below with your banking app, put the applicant's name in the payment remarks, and upload the payment screenshot below.</span></p>
-<img class="qr" id="qrFps" alt="FPS QR code" width="200" height="200"/>
+<img alt="FPS QR code" class="qr" height="200" id="qrFps" width="200"/>
 <dl id="payFps"></dl>
 </div>
 <div class="paybox" data-pay="微信支付 WeChat Pay" hidden="">
 <h3><span class="zh">微信支付</span> <span class="en">WeChat Pay</span></h3>
 <p><span class="zh">請用微信掃描下方二維碼付款，備註填寫申請人姓名，並於下方上傳付款截圖。</span><span class="en">Scan the QR code below with WeChat to pay, put the applicant's name in the remarks, and upload the payment screenshot below.</span></p>
-<img class="qr" id="qrWechat" alt="WeChat Pay QR code" width="200" height="200"/>
+<img alt="WeChat Pay QR code" class="qr" height="200" id="qrWechat" width="200"/>
 <dl id="payWechat"></dl>
 </div>
 <div class="paybox" data-pay="銀行入數 Bank deposit" hidden="">
@@ -369,7 +368,7 @@
 <h4 class="zh">一、資料的提供屬自願性質</h4>
 <p class="zh">標有「*」的欄位為處理入會申請所必需；如不提供，本會可能無法處理你的申請。其他欄位屬自願提供。</p>
 <h4 class="zh">二、收集的資料類別</h4>
-<p class="zh">姓名、性別、出生日期、聯絡資料（電話、電郵、地址）、居住地區、在暨南大學的學歷及就讀資料、職業及行業資料；以及（如你選擇提供）香港身份證號碼、專業資格、社會公職、學生證／畢業證書等證明文件、付款證明，和你就校友活動興趣、參與角色、導師意願及建議所作的回應。</p>
+<p class="zh">姓名、性別、出生日期、聯絡資料（電話、電郵、地址）、居住地區、在暨南大學的學歷及就讀資料、職業及行業資料；以及（如你選擇提供）專業資格、社會公職、學生證／畢業證書等證明文件、付款證明，和你就校友活動興趣、參與角色、導師意願及建議所作的回應。</p>
 <h4 class="zh">三、收集及使用目的</h4>
 <p class="zh">(1) 審批及管理會籍（包括核實資格、處理會費、編配會員編號）；<br/>
         (2) 提供會員服務及必要的行政通訊（如會籍確認、續費及資料變更通知）；<br/>
@@ -393,7 +392,7 @@
 <p class="en"><b>English version</b> (the Chinese text and English text are intended to have the same meaning).</p>
 <p class="en">Jinan University Hong Kong Alumni Association Limited (the “Association”) is committed to protecting your personal data privacy and handles your data in accordance with the Personal Data (Privacy) Ordinance (Cap. 486) (the “Ordinance”). Please read this statement before you submit.</p>
 <p class="en"><b>1. Supply of data is voluntary.</b> Fields marked “*” are necessary to process your application; if you do not provide them we may be unable to process it. All other fields are optional.</p>
-<p class="en"><b>2. Kinds of data collected.</b> Name, gender, date of birth, contact details (phone, email, address), district of residence, study details at Jinan University, occupation and industry; and, if you choose to provide them, Hong Kong ID number, professional qualifications, public service, supporting documents (student card / graduation certificate), proof of payment, and your answers about activity interests, roles, mentoring willingness and comments.</p>
+<p class="en"><b>2. Kinds of data collected.</b> Name, gender, date of birth, contact details (phone, email, address), district of residence, study details at Jinan University, occupation and industry; and, if you choose to provide them, professional qualifications, public service, supporting documents (student card / graduation certificate), proof of payment, and your answers about activity interests, roles, mentoring willingness and comments.</p>
 <p class="en"><b>3. Purposes.</b> (1) assessing and administering membership (eligibility checks, fees, membership numbers); (2) providing member services and necessary administrative notices (membership confirmation, renewal, changes); (3) with your consent, sending the Association’s newsletters, event and social information (see section 6); (4) planning and improving alumni activities, district and college networks, the mentoring programme and related services, including statistics and analysis that do not identify individuals; (5) if you indicate willingness to act as a mentor, district/college liaison, volunteer or guest speaker, or to receive/offer referral and job information, contacting you about those matters; (6) complying with legal or regulatory requirements. We will not use your data for other purposes without your consent or legal authority.</p>
 <p class="en"><b>4. Disclosure and transfer.</b> We do not sell your data and will not disclose your contact details to other members, employers or any third party without your separate consent (for example, we will check with you before any mentor matching). We may disclose or transfer data only to (a) service providers who provide website, data storage, email and IT services for the Association (who may be located outside Hong Kong), and who may process data only on our instructions and must apply appropriate security measures; and (b) where required by law, a court, or a government/regulatory authority.</p>
 <p class="en"><b>5. Security and retention.</b> Your data is kept in access-controlled systems available only to authorised persons. Data of applications that are not approved or not completed is deleted within 12 months; member data is kept while membership is in force and for up to 2 years after membership ends (to handle enquiries, re-joining and legal obligations), then deleted or anonymised.</p>
