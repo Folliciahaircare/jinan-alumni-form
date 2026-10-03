@@ -38,18 +38,17 @@ window.JNU_CONFIG = {
     website: "www.jnuhkaa.org"
   },
 
-  // Payment details. TODO: fill in when received (never commit real account
-  // numbers to a public repo — see README). Empty values show "to be confirmed".
+  // Payment details. TODO: fill in when received. Empty values show "to be confirmed".
+  // Never commit private account details to a public repo — see README.
   PAYMENT: {
-    // 銀行入數 Bank deposit
-    payee:   { hant: "", hans: "", en: "" },   // 存入戶口名稱 account name
+    // 轉數快 FPS and 微信支付 WeChat Pay: put the QR images in assets/ (PNG/JPG) and set the paths.
+    // Until a file exists the form shows a "QR code to be provided" placeholder.
+    fpsQr: "assets/qr-fps.png",
+    wechatQr: "assets/qr-wechat.png",
+    fps: "",                                   // 轉數快 FPS ID / phone (optional, shown under the QR)
+    // 銀行入數 Bank deposit (the pay-in slip is faxed to CONTACT.fax)
+    payee:   { hant: "", hans: "", en: "" },   // 存入戶口名稱 account name (also shown under the QR codes)
     bank:    { hant: "", hans: "", en: "" },   // 銀行 bank
-    account: "",                               // 帳號 account number
-    fps: "",                                   // 轉數快 FPS id (optional)
-    // 支票 Cheque
-    chequePayableTo: { hant: "", hans: "", en: "" },   // 支票抬頭 payee on the cheque
-    // 現金／郵寄 Cash in person & posting cheques
-    officeAddress: { hant: "", hans: "", en: "" },
-    officeHours:   { hant: "", hans: "", en: "" }
+    account: ""                                // 帳號 account number
   }
 };

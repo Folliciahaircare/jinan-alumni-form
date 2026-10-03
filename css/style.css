@@ -142,3 +142,25 @@ select{height:52px}
 .notes summary{cursor:pointer;font-weight:700;color:var(--pri)}
 .notes ol{margin:8px 0 0;padding-left:20px}.notes li{margin:6px 0}.notes ul{margin:6px 0;padding-left:18px}
 .notes a{color:var(--pri)}
+
+/* ---- radio vs checkbox: clearly different shapes, strong borders ---- */
+.choice input[type=radio],.choice input[type=checkbox]{
+  -webkit-appearance:none;appearance:none;flex:none;width:24px;height:24px;min-height:0;padding:0;margin:3px 0 0;
+  border:2.5px solid #1f3a5f;background:#fff;display:inline-grid;place-content:center;cursor:pointer;accent-color:auto}
+.choice input[type=radio]{border-radius:50%}
+.choice input[type=checkbox]{border-radius:5px}
+.choice input[type=radio]::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--pri);transform:scale(0);transition:transform .1s}
+.choice input[type=checkbox]::before{content:"";width:14px;height:14px;background:#fff;transform:scale(0);transition:transform .1s;
+  clip-path:polygon(14% 44%,0 62%,40% 100%,100% 18%,84% 4%,40% 64%)}
+.choice input[type=radio]:checked{border-color:var(--pri)}
+.choice input[type=radio]:checked::before{transform:scale(1)}
+.choice input[type=checkbox]:checked{background:var(--pri);border-color:var(--pri)}
+.choice input[type=checkbox]:checked::before{transform:scale(1)}
+.choice input:focus-visible{outline:3px solid rgba(1,134,170,.45);outline-offset:2px}
+.invalid .choice input[type=radio],.invalid .choice input[type=checkbox]{border-color:var(--red)}
+.choices.inline .choice,.card{border:2px solid #8793a6}
+.choices.inline .choice:has(input:checked),.card:has(input:checked){border-color:var(--pri)}
+.choices.inline .choice input{margin:0}
+
+.qr{display:block;width:200px;max-width:100%;height:auto;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff;margin:8px 0}
+.addrow{margin:8px 0 0}

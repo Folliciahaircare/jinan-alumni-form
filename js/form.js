@@ -80,13 +80,19 @@
     });
   }
   var P = C.PAYMENT || {};
-  fillDl("#payInPerson", [[["地址", "Address"], P.officeAddress], [["辦公時間", "Hours"], P.officeHours]]);
-  fillDl("#payCheque", [[["抬頭", "Payable to"], P.chequePayableTo], [["郵寄地址", "Mail to"], P.officeAddress]]);
-  fillDl("#payBank", [[["存入戶口名稱", "Account name"], P.payee], [["銀行", "Bank"], P.bank], [["帳號", "Account no."], P.account], [["傳真入數紙至", "Fax the pay-in slip to"], C.CONTACT && C.CONTACT.fax], [["轉數快", "FPS"], P.fps]]);
+  fillDl("#payFps", [[["轉數快 ID", "FPS ID"], P.fps], [["收款人", "Payee"], P.payee]]);
+  fillDl("#payWechat", [[["收款人", "Payee"], P.payee]]);
+  fillDl("#payBank", [[["存入戶口名稱", "Account name"], P.payee], [["銀行", "Bank"], P.bank], [["帳號", "Account no."], P.account], [["傳真入數紙至", "Fax the pay-in slip to"], C.CONTACT && C.CONTACT.fax]]);
+  // payment QR images (fall back to a placeholder until the real files are added)
+  [["#qrFps", P.fpsQr], ["#qrWechat", P.wechatQr]].forEach(function (q) {
+    var img = $(q[0]);
+    img.onerror = function () { img.onerror = null; img.src = "assets/qr-placeholder.svg"; };
+    img.src = q[1] || "assets/qr-placeholder.svg";
+  });
 
   /* ---------- phone region pickers ---------- */
   var PH = window.JNU_PHONE;
-  [["mobile", "mobile"]].forEach(function (p) {
+  [["mobile", "mobile"], ["homeTel", "any"]].forEach(function (p) {
     var sel = $("#" + p[0] + "Cc"), inp = $("#" + p[0]);
     PH.fill(sel);
     function hint() { if (p[0] !== "mobile") return; var h = PH.region(sel.value).hint; setBi($("#mobileHint"), h.zh, h.en); }
@@ -108,6 +114,20 @@
   yearOptions($("#gradYear"), 1906, thisYear + 8);   // Jinan founded 1906
   yearOptions($("#pe1Year"), 1950, thisYear + 8);
   yearOptions($("#pe2Year"), 1950, thisYear + 8);
+  // public service: extra input rows
+  var psN = 1;
+  $("#psAdd").addEventListener("click", function () {
+    if (psN >= 6) return;
+    psN++;
+    var inp = document.createElement("input");
+    inp.name = "publicService" + psN; inp.id = "publicService" + psN; inp.autocomplete = "off"; inp.style.marginTop = "8px";
+    inp.setAttribute("aria-label", "Public service " + psN);
+    $("#psRows").appendChild(inp); inp.focus();
+    if (psN >= 6) this.parentNode.hidden = true;
+  });
+  function publicServices() {
+    return $$("#psRows input").map(function (e) { return e.value.trim(); }).filter(Boolean).join("；");
+  }
   $("#peAdd").addEventListener("click", function () { $("#peRow2").hidden = false; this.parentNode.hidden = true; });
   var today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
   $("#dob").max = today;
@@ -161,17 +181,19 @@
       var v = el.value.trim();
       if (el.required && !v) { mark(el, MSG); bad.push(el); return; }
       if (v && el.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { mark(el, bi("電郵格式不正確", "Invalid email")); bad.push(el); }
-      if (v && el.name === "mobile") {
-        var pr = PH.check($("#mobileCc").value, v, "mobile");
+      if (v && (el.name === "mobile" || el.name === "homeTel")) {
+        var pr = PH.check($("#" + el.name + "Cc").value, v, el.name === "mobile" ? "mobile" : "any");
         if (!pr.ok) { mark(el, bi("電話號碼與所選地區不符，請檢查（" + pr.region.hint.zh + "）", "Number doesn't match the selected region (" + pr.region.hint.en + ")")); bad.push(el); }
       }
       if (v && el.name === "hkid" && !/^[A-Za-z]{1,2}\d{6}\(?[0-9Aa]\)?$/.test(v.replace(/\s/g, ""))) { mark(el, bi("格式例：A123456(7)", "Format: A123456(7)")); bad.push(el); }
     });
-    if (n === 1) {   // prior education: a qualification / field / year needs an institution name
+    if (n === 1) {   // prior education: once an entry is started, every missing part is highlighted red
       [1, 2].forEach(function (i) {
         if ($("#peRow" + i).hidden) return;
-        var any = $("#pe" + i + "Level").value || val("pe" + i + "Field") || $("#pe" + i + "Year").value;
-        if (any && !val("pe" + i + "Inst")) { mark($("#pe" + i + "Inst"), bi("請填寫院校名稱", "Please enter the institution")); bad.push($("#pe" + i + "Inst")); }
+        var parts = ["Inst", "Level", "Field", "Year"].map(function (k) { return $("#pe" + i + k); });
+        var any = parts.some(function (p) { return p.value.trim(); });
+        if (!any) return;
+        parts.forEach(function (p) { if (!p.value.trim()) { mark(p, MSG); bad.push(p); } });
       });
     }
     if (n === 3) {
@@ -217,7 +239,7 @@
   function syncPay() {
     var m = $('input[name="payMethod"]:checked'), v = m ? m.value : "";
     $$(".paybox[data-pay]").forEach(function (b) { b.hidden = b.getAttribute("data-pay") !== v; });
-    $("#payProofWrap").hidden = !(v && v.indexOf("In person") < 0);
+    $("#payProofWrap").hidden = !v;
   }
   $$('input[name="memberType"]').forEach(function (r) { r.addEventListener("change", syncMembership); });
   $$('input[name="payMethod"]').forEach(function (r) { r.addEventListener("change", syncPay); });
@@ -336,7 +358,7 @@
       ref: ref, submittedAt: new Date().toISOString(),
       cnName: val("cnName"), enName: val("enName"), gender: ($('input[name="gender"]:checked') || {}).value || "",
       dob: val("dob"), hkid: val("hkid").toUpperCase(), nationality: val("nationality"), ancestry: val("ancestry"),
-      mobile: phoneFull("mobile", "mobile"), chatApps: chat.join(" / "), email: val("email"),
+      mobile: phoneFull("mobile", "mobile"), chatApps: chat.join(" / "), email: val("email"), homeTel: phoneFull("homeTel", "any"),
       address: val("address"),
       gradYear: val("gradYear"), college: withOther("college", "collegeOther", function (v) { return v === "其他"; }), major: val("major"), campus: val("campus"), eduLevel: val("eduLevel"),
       priorEducation: priorEducation(),
@@ -344,7 +366,7 @@
       workStatus: radioVal("workStatus"), industry: withOther("industry", "industryOther", function (v) { return /^其他/.test(v); }),
       mentor: radioVal("mentor"), interests: checked("interests"), roles: checked("roles"), cluster: radioVal("cluster"),
       referral: radioVal("referral"), comments: val("comments"),
-      company: val("company"), position: val("position"), qualifications: val("qualifications"), publicService: val("publicService"),
+      company: val("company"), position: val("position"), qualifications: val("qualifications"), publicService: publicServices(),
       memberType: memberType() === "basic" ? "基本會員 Basic" : "學生會員 Student",
       fee: memberType() === "basic" ? C.FEE_BASIC : 0,
       payMethod: memberType() === "basic" ? (($('input[name="payMethod"]:checked') || {}).value || "") : "",
@@ -379,9 +401,9 @@
     var ws = $('input[name="workStatus"]:checked');
     var rows = [
       ["姓名", "Name", d.cnName + " " + d.enName], ["性別", "Gender", pair(d.gender)], ["出生日期", "Date of birth", d.dob],
-      ["手提電話", "Mobile", d.mobile + (d.chatApps ? " (" + d.chatApps + ")" : "")], ["電郵", "Email", d.email],
+      ["手提電話", "Mobile", d.mobile + (d.chatApps ? " (" + d.chatApps + ")" : "")], ["其他電話", "Second phone", d.homeTel || "—"], ["電郵", "Email", d.email],
       ["居住區域", "District", selPair("district", "districtOther", function (v) { return /^香港以外/.test(v); })],
-      ["住宅地址", "Address", d.address || "—"],
+      ["聯絡地址", "Contact address", d.address || "—"],
       ["畢業年份", "Graduation", d.gradYear || { zh: "在學", en: "Still studying" }],
       ["校區", "Campus", selPair("campus", "", function () { return false; })],
       ["學院", "College", selPair("college", "collegeOther", function (v) { return v === "其他"; })],
@@ -446,8 +468,8 @@
     var faxZh = fx ? "（傳真：" + fx + "）" : "", faxEn = fx ? " (fax: " + fx + ")" : "";
     function nx(zh, en) { return "<p><b>" + bi("下一步：", "Next:") + "</b> " + bi(zh, en) + "</p>"; }
     if (!basic) html = nx("本會審核你的學生身份後會以電郵通知。", "we will verify your student status and notify you by email.");
-    else if (pm.indexOf("In person") > -1) html = nx("請親臨本會繳交會費 HK$" + f + " 並出示申請編號。", "pay HK$" + f + " in cash at the office, quoting your reference number.");
-    else if (pm.indexOf("Cheque") > -1) html = nx("請將 HK$" + f + " 支票郵寄至本會，支票背頁註明申請人姓名。", "post a HK$" + f + " cheque to the Association, with the applicant's name written on the back.");
+    else if (pm.indexOf("FPS") > -1) html = nx("請以轉數快將會費 HK$" + f + " 轉賬至本會，付款備註填寫申請人姓名" + (d.payFile ? "。" : "，並將付款截圖傳送本會。"), "pay the HK$" + f + " joining fee by FPS, with the applicant's name in the payment remarks" + (d.payFile ? "." : ", and send us the payment screenshot."));
+    else if (pm.indexOf("WeChat") > -1) html = nx("請以微信支付將會費 HK$" + f + " 付款至本會，備註填寫申請人姓名" + (d.payFile ? "。" : "，並將付款截圖傳送本會。"), "pay the HK$" + f + " joining fee by WeChat Pay, with the applicant's name in the remarks" + (d.payFile ? "." : ", and send us the payment screenshot."));
     else html = nx("請存入 HK$" + f + "，入數紙註明申請人姓名，傳真至校友會" + faxZh + "並確認收妥。", "deposit HK$" + f + ", write the applicant's name on the pay-in slip, fax it to the Association" + faxEn + " and confirm receipt.");
     box.innerHTML = html;
     form.hidden = true; $("#steps").hidden = true; $("#demoBanner").hidden = true;

@@ -18,7 +18,7 @@
 <div class="org-en en" id="orgEn">Jinan University Hong Kong Alumni Association</div>
 </div>
 <div aria-label="Language 語言" class="langsw" role="group">
-<button aria-pressed="true" data-lang="hant" type="button" title="繁體中文">繁</button><button aria-pressed="false" data-lang="hans" type="button" title="简体中文">简</button><button aria-pressed="false" data-lang="en" type="button" title="English">EN</button>
+<button aria-pressed="true" data-lang="hant" title="繁體中文" type="button">繁</button><button aria-pressed="false" data-lang="hans" title="简体中文" type="button">简</button><button aria-pressed="false" data-lang="en" title="English" type="button">EN</button>
 </div>
 </div>
 </header>
@@ -36,7 +36,7 @@
 <li><i>5</i><span><span class="zh">聲明提交</span><small class="en">Declare</small></span></li>
 </ol>
 <div class="notice warn" hidden="" id="demoBanner">
-    <span class="zh">示範模式：尚未連接接收端，提交的資料不會被傳送。</span>
+<span class="zh">示範模式：尚未連接接收端，提交的資料不會被傳送。</span>
 <span class="en">Demo mode: no endpoint configured — nothing will be sent.</span>
 </div>
 <form autocomplete="on" id="form" novalidate="">
@@ -60,7 +60,6 @@
 <div class="choices inline">
 <label class="choice"><input name="gender" required="" type="radio" value="男 Male"/><span><span class="zh">男</span> <span class="en">Male</span></span></label>
 <label class="choice"><input name="gender" type="radio" value="女 Female"/><span><span class="zh">女</span> <span class="en">Female</span></span></label>
-
 </div>
 </fieldset>
 <div class="grid">
@@ -73,14 +72,8 @@
 <input autocomplete="off" id="hkid" maxlength="12" name="hkid" placeholder="A123456(7)"/>
 <p class="hint"><span class="zh">選填；只在需要核實身份時使用。</span><span class="en">Optional; used only if identity verification is needed.</span></p>
 </div>
-<div class="field">
-<label for="nationality"><span class="zh">國籍</span> <span class="en">Nationality</span></label>
-<input autocomplete="country-name" id="nationality" name="nationality"/>
-</div>
-<div class="field">
-<label for="ancestry"><span class="zh">籍貫</span> <span class="en">Place of Ancestry</span></label>
-<input id="ancestry" name="ancestry"/>
-</div>
+
+
 </div>
 </section>
 <!-- ============ STEP 2 ============ -->
@@ -101,11 +94,14 @@
 </div>
 </fieldset>
 <div class="field">
+<label for="homeTel"><span class="zh">其他電話</span> <span class="en">Second phone</span> <span class="zh opt">（選填）</span><span class="en opt">(optional)</span></label>
+<div class="phone"><select aria-label="區號 Country / region code" class="cc" id="homeTelCc" name="homeTelCc"></select>
+<input autocomplete="off" id="homeTel" inputmode="tel" name="homeTel" type="tel"/></div>
+</div>
+<div class="field">
 <label for="email"><span class="zh">電子郵件</span> <span class="en">E-mail</span> <b class="req">*</b></label>
 <input autocomplete="email" id="email" inputmode="email" name="email" required="" type="email"/>
 </div>
-
-
 </div>
 <div class="grid">
 <div class="field">
@@ -117,15 +113,12 @@
 <input id="districtOther" name="districtOther"/>
 </div>
 </div>
-      <div class="field">
-<label for="address"><span class="zh">住宅地址</span> <span class="en">Residential Address</span> </label>
+<div class="field">
+<label for="address"><span class="zh">聯絡地址</span> <span class="en">Contact address</span> </label>
 <textarea autocomplete="street-address" id="address" name="address" rows="2"></textarea>
 </div>
-
-
 <h2><span class="zh">暨南大學學歷</span> <span class="en">Study at Jinan University</span></h2>
 <div class="grid">
-
 <div class="field">
 <label for="gradYear"><span class="zh">畢業年份</span> <span class="en">Year of Graduation</span></label>
 <select id="gradYear" name="gradYear"></select>
@@ -133,7 +126,7 @@
 </div>
 <div class="field">
 <label for="campus"><span class="zh">校區</span> <span class="en">Campus</span></label>
-<select id="campus" name="campus"><option value="" data-zh="— 請選擇 —" data-en="— Please select —">— 請選擇 —</option><option value="石牌校區（廣州校本部）" data-zh="石牌校區（廣州校本部）" data-en="Shipai campus (Guangzhou main campus)">石牌校區（廣州校本部）</option><option value="番禺校區" data-zh="番禺校區" data-en="Panyu campus">番禺校區</option><option value="珠海校區" data-zh="珠海校區" data-en="Zhuhai campus">珠海校區</option><option value="深圳校區" data-zh="深圳校區" data-en="Shenzhen campus">深圳校區</option><option value="廣園東（華文學院）" data-zh="廣園東（華文學院）" data-en="Guangyuandong (College of Chinese Language & Culture)">廣園東（華文學院）</option><option value="其他" data-zh="其他" data-en="Other">其他</option></select>
+<select id="campus" name="campus"><option data-en="— Please select —" data-zh="— 請選擇 —" value="">— 請選擇 —</option><option data-en="Shipai campus (Guangzhou main campus)" data-zh="石牌校區（廣州校本部）" value="石牌校區（廣州校本部）">石牌校區（廣州校本部）</option><option data-en="Panyu campus" data-zh="番禺校區" value="番禺校區">番禺校區</option><option data-en="Zhuhai campus" data-zh="珠海校區" value="珠海校區">珠海校區</option><option data-en="Shenzhen campus" data-zh="深圳校區" value="深圳校區">深圳校區</option><option data-en="Guangyuandong (College of Chinese Language &amp; Culture)" data-zh="廣園東（華文學院）" value="廣園東（華文學院）">廣園東（華文學院）</option><option data-en="Other" data-zh="其他" value="其他">其他</option></select>
 </div>
 <div class="field">
 <label for="college"><span class="zh">所屬學院</span> <span class="en">College / School</span> <b class="req">*</b></label>
@@ -176,32 +169,30 @@
 </div>
 <div class="field">
 <label for="major"><span class="zh">專業</span> <span class="en">Major</span> <b class="req">*</b></label>
-<input id="major" name="major" required autocomplete="off"/>
+<input autocomplete="off" id="major" name="major" required=""/>
 </div>
-
 <div class="field">
 <label for="eduLevel"><span class="zh">學歷</span> <span class="en">Educational Level</span></label>
 <select id="eduLevel" name="eduLevel"><option data-en="— Please select —" data-zh="— 請選擇 —" value="">— 請選擇 —</option><option data-en="Bachelor" data-zh="本科" value="本科 Bachelor">本科</option><option data-en="Master" data-zh="碩士研究生" value="碩士研究生 Master">碩士研究生</option><option data-en="Doctorate" data-zh="博士研究生" value="博士研究生 Doctorate">博士研究生</option><option data-en="Associate / Higher Diploma" data-zh="副學士／高級文憑" value="副學士／高級文憑 Associate / Higher Diploma">副學士／高級文憑</option><option data-en="Staff / Faculty" data-zh="教職員" value="教職員 Staff / Faculty">教職員</option><option data-en="Other" data-zh="其他" value="其他 Other">其他</option></select>
 </div>
 </div>
-
 <h2><span class="zh">其他學歷</span> <span class="en">Other / prior education</span> <span class="zh opt">（選填）</span><span class="en opt">(optional)</span></h2>
 <p class="lead small"><span class="zh">曾在其他院校修讀的課程，例如入讀暨大前或之後的學位、文憑。</span> <span class="en">Studies at other institutions, e.g. before or after Jinan University.</span></p>
 <div class="edu-row" id="peRow1">
 <div class="grid">
-<div class="field"><label for="pe1Inst"><span class="zh">院校名稱</span> <span class="en">Institution</span></label><input id="pe1Inst" name="pe1Inst" autocomplete="off"></div>
-<div class="field"><label for="pe1Level"><span class="zh">學歷／資格</span> <span class="en">Qualification</span></label><select id="pe1Level" name="pe1Level"><option value="" data-zh="— 請選擇 —" data-en="— Please select —">— 請選擇 —</option><option value="高中／中學" data-zh="高中／中學" data-en="High school">高中／中學</option><option value="副學士／高級文憑" data-zh="副學士／高級文憑" data-en="Associate / Higher Diploma">副學士／高級文憑</option><option value="學士" data-zh="學士" data-en="Bachelor">學士</option><option value="碩士" data-zh="碩士" data-en="Master">碩士</option><option value="博士" data-zh="博士" data-en="Doctorate">博士</option><option value="其他" data-zh="其他" data-en="Other">其他</option></select></div>
-<div class="field"><label for="pe1Field"><span class="zh">主修／範疇</span> <span class="en">Field of study</span></label><input id="pe1Field" name="pe1Field" autocomplete="off"></div>
+<div class="field"><label for="pe1Inst"><span class="zh">院校名稱</span> <span class="en">Institution</span></label><input autocomplete="off" id="pe1Inst" name="pe1Inst"/></div>
+<div class="field"><label for="pe1Level"><span class="zh">學歷／資格</span> <span class="en">Qualification</span></label><select id="pe1Level" name="pe1Level"><option data-en="— Please select —" data-zh="— 請選擇 —" value="">— 請選擇 —</option><option data-en="High school" data-zh="高中／中學" value="高中／中學">高中／中學</option><option data-en="Associate / Higher Diploma" data-zh="副學士／高級文憑" value="副學士／高級文憑">副學士／高級文憑</option><option data-en="Bachelor" data-zh="學士" value="學士">學士</option><option data-en="Master" data-zh="碩士" value="碩士">碩士</option><option data-en="Doctorate" data-zh="博士" value="博士">博士</option><option data-en="Other" data-zh="其他" value="其他">其他</option></select></div>
+<div class="field"><label for="pe1Field"><span class="zh">主修／範疇</span> <span class="en">Field of study</span></label><input autocomplete="off" id="pe1Field" name="pe1Field"/></div>
 <div class="field"><label for="pe1Year"><span class="zh">完成年份</span> <span class="en">Year completed</span></label><select id="pe1Year" name="pe1Year"></select></div>
 </div></div>
-<div class="edu-row" id="peRow2" hidden>
+<div class="edu-row" hidden="" id="peRow2">
 <div class="grid">
-<div class="field"><label for="pe2Inst"><span class="zh">院校名稱</span> <span class="en">Institution</span></label><input id="pe2Inst" name="pe2Inst" autocomplete="off"></div>
-<div class="field"><label for="pe2Level"><span class="zh">學歷／資格</span> <span class="en">Qualification</span></label><select id="pe2Level" name="pe2Level"><option value="" data-zh="— 請選擇 —" data-en="— Please select —">— 請選擇 —</option><option value="高中／中學" data-zh="高中／中學" data-en="High school">高中／中學</option><option value="副學士／高級文憑" data-zh="副學士／高級文憑" data-en="Associate / Higher Diploma">副學士／高級文憑</option><option value="學士" data-zh="學士" data-en="Bachelor">學士</option><option value="碩士" data-zh="碩士" data-en="Master">碩士</option><option value="博士" data-zh="博士" data-en="Doctorate">博士</option><option value="其他" data-zh="其他" data-en="Other">其他</option></select></div>
-<div class="field"><label for="pe2Field"><span class="zh">主修／範疇</span> <span class="en">Field of study</span></label><input id="pe2Field" name="pe2Field" autocomplete="off"></div>
+<div class="field"><label for="pe2Inst"><span class="zh">院校名稱</span> <span class="en">Institution</span></label><input autocomplete="off" id="pe2Inst" name="pe2Inst"/></div>
+<div class="field"><label for="pe2Level"><span class="zh">學歷／資格</span> <span class="en">Qualification</span></label><select id="pe2Level" name="pe2Level"><option data-en="— Please select —" data-zh="— 請選擇 —" value="">— 請選擇 —</option><option data-en="High school" data-zh="高中／中學" value="高中／中學">高中／中學</option><option data-en="Associate / Higher Diploma" data-zh="副學士／高級文憑" value="副學士／高級文憑">副學士／高級文憑</option><option data-en="Bachelor" data-zh="學士" value="學士">學士</option><option data-en="Master" data-zh="碩士" value="碩士">碩士</option><option data-en="Doctorate" data-zh="博士" value="博士">博士</option><option data-en="Other" data-zh="其他" value="其他">其他</option></select></div>
+<div class="field"><label for="pe2Field"><span class="zh">主修／範疇</span> <span class="en">Field of study</span></label><input autocomplete="off" id="pe2Field" name="pe2Field"/></div>
 <div class="field"><label for="pe2Year"><span class="zh">完成年份</span> <span class="en">Year completed</span></label><select id="pe2Year" name="pe2Year"></select></div>
 </div></div>
-<p><button type="button" class="btn ghost add" id="peAdd"><span class="zh">＋ 新增一項</span><span class="en">+ Add another</span></button></p>
+<p><button class="btn ghost add" id="peAdd" type="button"><span class="zh">＋ 新增一項</span><span class="en">+ Add another</span></button></p>
 </section>
 <!-- ============ STEP 3 (new): career & community ============ -->
 <section class="step" data-step="3" hidden="">
@@ -239,7 +230,8 @@
 </div>
 <div class="field">
 <label for="publicService"><span class="zh">社會公職</span> <span class="en">Public Service</span></label>
-<input id="publicService" name="publicService"/>
+<div id="psRows"><input id="publicService" name="publicService" autocomplete="off"/></div>
+<p class="addrow"><button type="button" class="btn ghost add" id="psAdd"><span class="zh">＋ 新增一項</span><span class="en">+ Add another</span></button></p>
 </div>
 </div>
 <h2><span class="zh">校友活動及參與</span> <span class="en">Community &amp; interests (optional)</span></h2>
@@ -247,8 +239,8 @@
 <fieldset class="field"><legend><span class="zh">是否願意擔任「職場導師」，為年輕校友分享經驗？</span> <span class="en">Willing to be a career mentor for younger alumni?</span></legend>
 <div class="choices stack">
 <label class="choice"><input name="mentor" type="radio" value="願意，歡迎聯絡我"/><span><span class="zh">願意，歡迎聯絡我</span> <span class="en">Yes, please contact me</span></span></label>
-<label class="choice"><input name="mentor" type="radio" value="可以考慮"/><span><span class="zh">可以考慮</span> <span class="en">Maybe</span></span></label>
-<label class="choice"><input name="mentor" type="radio" value="不擔任導師，但我需要導師"/><span><span class="zh">暫時不需要，但我需要導師</span> <span class="en">Not now, but I'd like a mentor</span></span></label>
+
+
 <label class="choice"><input name="mentor" type="radio" value="暫不參與"/><span><span class="zh">暫不參與</span> <span class="en">Not participating</span></span></label>
 </div></fieldset>
 <fieldset class="field"><legend><span class="zh">感興趣的校友活動（可多選）</span> <span class="en">Activities you are interested in (multiple)</span></legend>
@@ -295,10 +287,10 @@
 </section>
 <!-- ============ STEP 5 ============ -->
 <section class="step" data-step="4" hidden="">
-<details class="notes" open>
+<details class="notes" open="">
 <summary><span class="zh">會籍申請說明</span><span class="en">Notes on membership application</span></summary>
 <ol>
-<li><span class="zh">有關會籍申請的章則及會員之權利義務，均已清楚列於本會網頁（<a href="https://www.jnuhkaa.org" target="_blank" rel="noopener">www.jnuhkaa.org</a>），請仔細閱讀。</span><span class="en">The rules on membership and members' rights and obligations are set out on the Association's website (<a href="https://www.jnuhkaa.org" target="_blank" rel="noopener">www.jnuhkaa.org</a>). Please read them carefully.</span></li>
+<li><span class="zh">有關會籍申請的章則及會員之權利義務，均已清楚列於本會網頁（<a href="https://www.jnuhkaa.org" rel="noopener" target="_blank">www.jnuhkaa.org</a>），請仔細閱讀。</span><span class="en">The rules on membership and members' rights and obligations are set out on the Association's website (<a href="https://www.jnuhkaa.org" rel="noopener" target="_blank">www.jnuhkaa.org</a>). Please read them carefully.</span></li>
 <li><span class="zh">會籍基本分為兩種：</span><span class="en">There are two basic types of membership:</span>
 <ul>
 <li><span class="zh"><b>基本會員：</b>凡曾經在暨南大學就讀、任教或任職的香港居民，認同本會宗旨，接受本會會章，及願意繳交本會訂立的入會費，均可申請加入為基本會員。</span><span class="en"><b>Basic member:</b> Hong Kong residents who have studied, taught or worked at Jinan University, who support the Association's aims, accept its constitution and are willing to pay the joining fee, may apply to be a basic member.</span></li>
@@ -314,14 +306,12 @@
 <label class="choice card">
 <input name="memberType" required="" type="radio" value="basic"/>
 <span><b><span class="zh">基本會員</span> <span class="en">Basic Member</span></b> <em class="fee" id="feeBasic">HK$100</em>
-
 <small><span class="zh">曾在暨南大學就讀、任教或任職的香港居民。</span>
 <span class="en">Hong Kong residents who have studied, taught or worked at Jinan University.</span></small></span>
 </label>
 <label class="choice card">
 <input name="memberType" type="radio" value="student"/>
 <span><b><span class="zh">學生會員</span> <span class="en">Student Member</span></b> <em class="fee free"><span class="zh">免費</span> <span class="en">Free</span></em>
-
 <small><span class="zh">正在暨南大學就讀的香港學生（包括兼讀制及在港主辦／合辦課程）；畢業或離校後會籍終止，可繳費轉為基本會員。</span>
 <span class="en">Hong Kong students currently enrolled (incl. part-time and HK-run/joint programmes). Membership ends on graduation or leaving; may upgrade to Basic on payment.</span></small></span>
 </label>
@@ -337,34 +327,36 @@
 <div hidden="" id="paySection">
 <h2><span class="zh">繳交會費</span> <span class="en">Payment of Joining Fee</span> <b class="req">*</b></h2>
 <p class="lead small"><span class="zh">基本會員入會費港幣</span> <b class="feeNum">100</b> <span class="zh">元。請選擇繳費方式：</span>
-          <span class="en">Basic members pay a joining fee of HK$<span class="feeNum">100</span>. Choose a payment method:</span></p>
+<span class="en">Basic members pay a joining fee of HK$<span class="feeNum">100</span>. Choose a payment method:</span></p>
 <fieldset class="field">
 <legend class="sr"><span class="zh">繳費方式</span> <span class="en">Payment method</span></legend>
 <div class="choices cards">
-<label class="choice card"><input name="payMethod" type="radio" value="現金親臨本會 In person (cash)"/><span><b class="zh">現金（親臨本會）</b><small class="en">In person at the Association (cash)</small></span></label>
-<label class="choice card"><input name="payMethod" type="radio" value="支票 Cheque"/><span><b class="zh">支票</b><small class="en">Cheque</small></span></label>
-<label class="choice card"><input name="payMethod" type="radio" value="銀行轉賬 Bank transfer"/><span><b class="zh">銀行轉賬</b><small class="en">Bank transfer / FPS</small></span></label>
+<label class="choice card"><input name="payMethod" type="radio" value="轉數快 FPS"/><span><b class="zh">轉數快 FPS（掃描二維碼）</b><small class="en">FPS (scan the QR code)</small></span></label>
+<label class="choice card"><input name="payMethod" type="radio" value="微信支付 WeChat Pay"/><span><b class="zh">微信支付（掃描二維碼）</b><small class="en">WeChat Pay (scan the QR code)</small></span></label>
+<label class="choice card"><input name="payMethod" type="radio" value="銀行入數 Bank deposit"/><span><b class="zh">銀行入數</b><small class="en">Bank deposit</small></span></label>
 </div>
 </fieldset>
-<div class="paybox" data-pay="現金親臨本會 In person (cash)" hidden="">
-<h3><span class="zh">現金</span> <span class="en">In person</span></h3>
-<p><span class="zh">提交申請後，請親臨本會繳交現金。</span><span class="en">After submitting, please pay in cash at the Association's office.</span></p>
-<dl id="payInPerson"></dl>
+<div class="paybox" data-pay="轉數快 FPS" hidden="">
+<h3><span class="zh">轉數快 FPS</span> <span class="en">FPS</span></h3>
+<p><span class="zh">請用銀行 App 掃描下方二維碼轉賬，付款備註填寫申請人姓名，並於下方上傳付款截圖。</span><span class="en">Scan the QR code below with your banking app, put the applicant's name in the payment remarks, and upload the payment screenshot below.</span></p>
+<img class="qr" id="qrFps" alt="FPS QR code" width="200" height="200"/>
+<dl id="payFps"></dl>
 </div>
-<div class="paybox" data-pay="支票 Cheque" hidden="">
-<h3><span class="zh">支票</span> <span class="en">Cheque</span></h3>
-<p><span class="zh">請將上述抬頭的支票郵寄至本會，並在支票背頁註明申請人姓名。</span><span class="en">Post a cheque made payable as shown below to the Association, and write the applicant's name on the back of the cheque.</span></p>
-<dl id="payCheque"></dl>
+<div class="paybox" data-pay="微信支付 WeChat Pay" hidden="">
+<h3><span class="zh">微信支付</span> <span class="en">WeChat Pay</span></h3>
+<p><span class="zh">請用微信掃描下方二維碼付款，備註填寫申請人姓名，並於下方上傳付款截圖。</span><span class="en">Scan the QR code below with WeChat to pay, put the applicant's name in the remarks, and upload the payment screenshot below.</span></p>
+<img class="qr" id="qrWechat" alt="WeChat Pay QR code" width="200" height="200"/>
+<dl id="payWechat"></dl>
 </div>
-<div class="paybox" data-pay="銀行轉賬 Bank transfer" hidden="">
-<h3><span class="zh">銀行轉賬</span> <span class="en">Bank transfer</span></h3>
+<div class="paybox" data-pay="銀行入數 Bank deposit" hidden="">
+<h3><span class="zh">銀行入數</span> <span class="en">Bank deposit</span></h3>
 <p><span class="zh">請將會費存入下列戶口，並在入數紙註明申請人姓名，傳真至校友會並確認收妥。</span><span class="en">Deposit the fee into the account below, write the applicant's name on the pay-in slip, fax it to the Association and confirm that it has been received.</span></p>
 <dl id="payBank"></dl>
 </div>
 <div class="field" hidden="" id="payProofWrap">
-<label for="payFile"><span class="zh">付款證明（入數紙／支票副本）</span><span class="en">Payment proof (pay-in slip / cheque copy)</span></label>
+<label for="payFile"><span class="zh">付款證明（付款截圖／入數紙）</span><span class="en">Payment proof (screenshot / pay-in slip)</span></label>
 <input accept="image/*,application/pdf" data-key="pay" id="payFile" name="payFile" type="file"/>
-<p class="hint"><span class="zh">選填，可上傳副本作參考；以入數方式繳費者，入數紙仍須傳真至校友會。</span><span class="en">Optional copy for reference — if you pay by bank deposit, the pay-in slip must still be faxed to the Association.</span></p>
+<p class="hint"><span class="zh">請上傳付款截圖或入數紙副本（選填）；以銀行入數方式繳費者，入數紙仍須傳真至校友會。</span><span class="en">Please upload your payment screenshot or a copy of the pay-in slip (optional). If you pay by bank deposit, the pay-in slip must still be faxed to the Association.</span></p>
 <p class="filename" id="payFileName"></p>
 </div>
 </div>
@@ -421,7 +413,7 @@
 <span class="en">I have read and agree to the Association collecting, using and keeping my personal data for membership assessment, administration and necessary member services (section 3(1), (2), (6)), but I <b>do not agree</b> to direct marketing. I understand the Association will contact me only about membership matters and will use my answers on activity interests and participation only in statistical form that does not identify me.</span></span></label>
 </div>
 </fieldset>
-<label class="choice single"><input type="checkbox" name="constitution" value="yes" required="">
+<label class="choice single"><input name="constitution" required="" type="checkbox" value="yes"/>
 <span><span class="zh">本人認同本會宗旨，並接受本會會章。</span><span class="en">I support the Association's aims and accept its constitution.</span></span></label>
 <label class="choice single"><input name="truth" required="" type="checkbox" value="yes"/>
 <span><span class="zh">本人謹此聲明，以上所填資料出於自願，全部屬實，如有更改將主動告知本會。</span>
